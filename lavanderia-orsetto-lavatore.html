@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Orsetto Lavatore — Self-service a Vidigulfo</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#173446">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Orsetto Lavatore">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --schiuma:#F1F4F0;
+    --schiuma-2:#E7ECE4;
+    --blu-profondo:#173446;
+    --blu-profondo-2:#0F2530;
+    --blu-acqua:#4E88A6;
+    --giallo:#F4B940;
+    --salvia:#7C9C82;
+    --inchiostro:#16232B;
+    --grigio:#5C6B66;
+    --bianco:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--schiuma);
+    color:var(--inchiostro);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.disp{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  img,svg{display:block;max-width:100%;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 32px;}
+  @media(max-width:640px){.wrap{padding:0 20px;}}
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(241,244,240,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(22,35,43,0.08);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:76px;}
+  .logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:600;font-size:19px;letter-spacing:-0.01em;}
+  .logo-mark{width:30px;height:30px;border-radius:50%;border:2.5px solid var(--blu-profondo);position:relative;overflow:hidden;flex-shrink:0;}
+  .logo-mark::after{content:"";position:absolute;inset:5px;border-radius:50%;border:2px dashed var(--blu-acqua);animation:spin 6s linear infinite;}
+  .navlinks{display:flex;gap:36px;font-size:14.5px;font-weight:500;}
+  .navlinks a{text-decoration:none;color:var(--inchiostro);opacity:0.75;transition:opacity .15s;}
+  .navlinks a:hover{opacity:1;}
+  .nav-cta{
+    background:var(--blu-profondo);color:var(--schiuma);
+    padding:10px 20px;border-radius:100px;font-size:14px;font-weight:600;
+    text-decoration:none;white-space:nowrap;
+  }
+  @media(max-width:820px){.navlinks{display:none;}}
+  @media(max-width:480px){.logo{font-size:16px;gap:8px;}}
+
+  /* HERO */
+  .hero{background:var(--blu-profondo);color:var(--schiuma);}
+  .hero-photo{width:100%;height:min(52vw,460px);object-fit:cover;display:block;}
+  .hero .wrap{padding-top:48px;padding-bottom:80px;}
+  @media(max-width:900px){.hero .wrap{padding-top:36px;padding-bottom:56px;}}
+  .eyebrow{
+    font-family:'IBM Plex Mono';font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--giallo);margin-bottom:20px;display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow-dot{width:7px;height:7px;border-radius:50%;background:var(--giallo);animation:pulse 2s ease-in-out infinite;}
+  .hero h1{font-size:52px;line-height:1.06;font-weight:600;letter-spacing:-0.02em;margin-bottom:22px;}
+  .hero h1 em{font-style:normal;color:var(--blu-acqua);}
+  @media(max-width:640px){.hero h1{font-size:36px;}}
+  .hero p.sub{font-size:17px;color:rgba(241,244,240,0.72);max-width:440px;margin-bottom:32px;}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--giallo);color:var(--blu-profondo-2);font-weight:600;font-size:15px;
+    padding:14px 26px;border-radius:100px;text-decoration:none;border:none;cursor:pointer;
+    transition:transform .15s;
+  }
+  .btn-primary:hover{transform:translateY(-1px);}
+  .btn-ghost{
+    color:var(--schiuma);font-weight:600;font-size:15px;padding:14px 22px;
+    border-radius:100px;text-decoration:none;border:1px solid rgba(241,244,240,0.3);
+    transition:border-color .15s;
+  }
+  .btn-ghost:hover{border-color:rgba(241,244,240,0.7);}
+  .hero-meta{display:flex;gap:28px;margin-top:44px;flex-wrap:wrap;}
+  .hero-meta div{font-family:'IBM Plex Mono';font-size:12px;color:rgba(241,244,240,0.55);}
+  .hero-meta strong{display:block;color:var(--schiuma);font-size:15px;font-family:'Space Grotesk';font-weight:500;margin-bottom:2px;}
+
+  /* PORTHOLE */
+  .porthole-wrap{display:flex;justify-content:center;}
+  .porthole{width:320px;height:320px;position:relative;}
+  @media(max-width:640px){.porthole{width:240px;height:240px;}}
+  .ph-ring1{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 50%, #0F2530 0%, #0A1B22 100%);box-shadow:inset 0 0 0 10px #0A1B22;}
+  .ph-ring2{position:absolute;inset:14px;border-radius:50%;border:10px solid #24485C;}
+  .ph-glass{position:absolute;inset:34px;border-radius:50%;background:linear-gradient(160deg, rgba(78,136,166,0.35), rgba(15,37,48,0.9));overflow:hidden;}
+  .ph-drum{position:absolute;inset:0;animation:spin 3.2s linear infinite;}
+  .sock{position:absolute;width:26px;height:14px;border-radius:8px;background:var(--giallo);}
+  .sock:nth-child(1){top:10%;left:48%;background:var(--giallo);}
+  .sock:nth-child(2){top:60%;left:15%;background:var(--salvia);width:20px;height:20px;border-radius:50%;}
+  .sock:nth-child(3){top:65%;left:65%;background:var(--blu-acqua);width:30px;height:16px;}
+  .ph-bolts{position:absolute;inset:-2px;}
+  .bolt{position:absolute;width:8px;height:8px;border-radius:50%;background:#3A5A6B;}
+
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+  /* SECTION generic */
+  section{padding:84px 0;}
+  @media(max-width:640px){section{padding:56px 0;}}
+  .section-tag{
+    font-family:'IBM Plex Mono';font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--blu-acqua);margin-bottom:12px;
+  }
+  .section-title{font-size:32px;font-weight:600;letter-spacing:-0.015em;max-width:600px;}
+  @media(max-width:640px){.section-title{font-size:26px;}}
+  .section-head{margin-bottom:48px;}
+
+  /* LIVE BOARD */
+  .board-section{background:var(--blu-profondo-2);color:var(--schiuma);}
+  .board-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:32px;}
+  .board-head .section-title{color:var(--schiuma);}
+  .board-head .section-tag{color:var(--giallo);}
+  .last-update{font-family:'IBM Plex Mono';font-size:12px;color:rgba(241,244,240,0.5);}
+  .board{
+    background:#0A1B22;border-radius:14px;padding:28px;
+    border:1px solid rgba(78,136,166,0.25);
+  }
+  .board-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media(max-width:820px){.board-grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:480px){.board-grid{grid-template-columns:repeat(2,1fr);}}
+  .board-columns{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+  @media(max-width:640px){.board-columns{grid-template-columns:1fr;gap:24px;}}
+  #board-grid-lavatrici,#board-grid-asciugatrici{grid-template-columns:1fr;}
+  .machine{
+    background:#0F2530;border-radius:8px;padding:14px 12px;font-family:'IBM Plex Mono';
+    border-left:3px solid var(--grigio);
+  }
+  .machine.libera{border-left-color:var(--salvia);}
+  .machine.corso{border-left-color:var(--giallo);}
+  .machine.pronta{border-left-color:var(--blu-acqua);}
+  .m-id{font-size:11px;color:rgba(241,244,240,0.5);letter-spacing:0.05em;margin-bottom:6px;}
+  .m-status{font-size:13.5px;font-weight:500;margin-bottom:4px;}
+  .machine.libera .m-status{color:var(--salvia);}
+  .machine.corso .m-status{color:var(--giallo);}
+  .machine.pronta .m-status{color:var(--blu-acqua);}
+  .m-time{font-size:11.5px;color:rgba(241,244,240,0.45);}
+  .board-legend{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;font-size:12.5px;color:rgba(241,244,240,0.55);}
+  .board-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend-dot{width:8px;height:8px;border-radius:2px;}
+  .board-group-label{
+    font-family:'IBM Plex Mono';font-size:12px;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--blu-acqua);margin-bottom:10px;
+  }
+  .non-disponibile{
+    background:#0F2530;border-radius:8px;padding:24px 16px;text-align:center;
+    color:rgba(241,244,240,0.55);font-size:14px;border-left:3px solid var(--grigio);
+  }
+  .non-disponibile span{font-family:'IBM Plex Mono';font-size:12px;color:rgba(241,244,240,0.4);}
+
+  /* COME FUNZIONA */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}
+  @media(max-width:820px){.steps{grid-template-columns:1fr;}}
+  .step{position:relative;padding-top:8px;}
+  .step-num{font-family:'IBM Plex Mono';font-size:13px;color:var(--blu-acqua);margin-bottom:14px;}
+  .step h3{font-size:19px;font-weight:600;margin-bottom:10px;}
+  .step p{font-size:14.5px;color:var(--grigio);}
+  .step-line{height:1px;background:linear-gradient(90deg, rgba(78,136,166,0.4), transparent);margin-top:24px;}
+
+  /* SERVIZI */
+  .servizi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:900px){.servizi-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:520px){.servizi-grid{grid-template-columns:1fr;}}
+  .servizio{
+    background:var(--bianco);border-radius:14px;padding:26px 22px;
+    border:1px solid rgba(22,35,43,0.08);
+    transition:border-color .15s, transform .15s;
+  }
+  .servizio:hover{border-color:var(--blu-acqua);transform:translateY(-2px);}
+  .servizio-icon{width:38px;height:38px;margin-bottom:16px;}
+  .servizio h3{font-size:16.5px;font-weight:600;margin-bottom:8px;}
+  .servizio p{font-size:13.5px;color:var(--grigio);}
+
+  /* PREZZI */
+  .prezzi-panel{
+    background:var(--inchiostro);color:var(--schiuma);border-radius:16px;
+    padding:36px 40px;display:grid;grid-template-columns:1fr 1fr;gap:0;
+  }
+  @media(max-width:820px){.prezzi-panel{grid-template-columns:1fr;padding:28px 24px;}}
+  .prezzo-riga{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:16px 0;border-bottom:1px solid rgba(241,244,240,0.12);
+  }
+  .prezzo-col:first-child{padding-right:28px;}
+  @media(max-width:820px){.prezzo-col:first-child{padding-right:0;border-bottom:1px solid rgba(241,244,240,0.12);margin-bottom:8px;padding-bottom:8px;}}
+  .prezzo-nome{font-size:14.5px;color:rgba(241,244,240,0.85);}
+  .prezzo-val{font-family:'IBM Plex Mono';font-size:17px;color:var(--giallo);}
+
+  /* DOVE SIAMO */
+  .dove-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+  @media(max-width:820px){.dove-grid{grid-template-columns:1fr;gap:32px;}}
+  .info-riga{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid rgba(22,35,43,0.08);}
+  .info-riga:last-child{border-bottom:none;}
+  .info-label{font-family:'IBM Plex Mono';font-size:11.5px;color:var(--blu-acqua);text-transform:uppercase;letter-spacing:0.06em;width:90px;flex-shrink:0;padding-top:2px;}
+  .info-val{font-size:15px;}
+  .info-val small{display:block;color:var(--grigio);font-size:13px;margin-top:2px;}
+  .mappa{
+    background:var(--schiuma-2);border-radius:14px;height:100%;min-height:280px;
+    display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+    border:1px solid rgba(22,35,43,0.08);
+  }
+  .mappa svg{position:absolute;inset:0;width:100%;height:100%;opacity:0.5;}
+  .mappa-pin{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;}
+  .pin-dot{width:16px;height:16px;background:var(--blu-profondo);border-radius:50% 50% 50% 0;transform:rotate(-45deg);margin-bottom:8px;}
+  .mappa-label{font-family:'IBM Plex Mono';font-size:12px;color:var(--grigio);background:var(--bianco);padding:4px 10px;border-radius:100px;border:1px solid rgba(22,35,43,0.1);}
+
+  /* FOOTER */
+  footer{background:var(--blu-profondo-2);color:rgba(241,244,240,0.55);padding:40px 0;font-size:13px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  footer strong{color:var(--schiuma);}
+
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo"><img src="logo-orsetto.png" alt="Mascotte de L'Orsetto Lavatore" style="width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0;">L'Orsetto Lavatore</div>
+    <div class="navlinks">
+      <a href="#come-funziona">Come funziona</a>
+      <a href="#servizi">Servizi</a>
+      <a href="#prezzi">Prezzi</a>
+      <a href="#dove-siamo">Dove siamo</a>
+    </div>
+    <a class="nav-cta" href="#dove-siamo">Vieni a trovarci</a>
+    <button class="nav-cta" id="install-btn" style="display:none;border:none;cursor:pointer;">Installa l'app</button>
+  </div>
+</nav>
+
+<header class="hero">
+  <img class="hero-photo" src="foto-lavanderia.jpg" alt="Interno de L'Orsetto Lavatore: lavatrici e asciugatrici professionali">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow"><span class="eyebrow-dot"></span>Aperti ogni giorno, anche la domenica</div>
+      <h1>Il bucato aspetta.<br>Tu <em>no</em>.</h1>
+      <p class="sub">Lavatrici e asciugatrici professionali, paga con banconote, moneta o tessera ricaricabile, aperto dalle 7 alle 22. Entri, avvii, esci a fare altro: la lavanderia ti scrive quando è pronto.</p>
+      <div class="hero-ctas">
+        <a class="btn-primary" href="#prezzi">Vedi prezzi e cicli</a>
+        <a class="btn-ghost" href="#come-funziona">Come funziona</a>
+      </div>
+      <div class="hero-meta">
+        <div><strong>07:00 – 22:00</strong>tutti i giorni</div>
+        <div><strong>8 macchine</strong>4 lavatrici, 4 asciugatrici</div>
+        <div><strong>Macchina del sottovuoto</strong>per piumoni, coperte e vestiti</div>
+        <div><strong>Distributore sacchetti</strong>sacchetti per il sottovuoto in loco</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="board-section" id="disponibilita">
+  <div class="wrap">
+    <div class="board-head">
+      <div>
+        <div class="section-tag">Disponibilità in tempo reale</div>
+        <h2 class="section-title">Guarda da casa se c'è posto</h2>
+      </div>
+      <div class="last-update">Ultimo aggiornamento: 14:32 · esempio dimostrativo</div>
+    </div>
+    <div class="board">
+      <div class="board-columns">
+        <div class="board-col">
+          <div class="board-group-label">Lavatrici</div>
+          <div class="board-grid" id="board-grid-lavatrici"><!-- generato da LAVATRICI --></div>
+        </div>
+        <div class="board-col">
+          <div class="board-group-label">Asciugatrici</div>
+          <div class="board-grid" id="board-grid-asciugatrici"><!-- generato da ASCIUGATRICI --></div>
+        </div>
+      </div>
+      <div class="board-legend">
+        <span><span class="legend-dot" style="background:var(--salvia)"></span>Libera ora</span>
+        <span><span class="legend-dot" style="background:var(--giallo)"></span>Ciclo in corso</span>
+        <span><span class="legend-dot" style="background:var(--blu-acqua)"></span>Finito, da ritirare</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="come-funziona">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Come funziona</div>
+      <h2 class="section-title">Tre passaggi, zero codice a memoria</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Introduci la biancheria</h3>
+        <p>Metti i panni, premi il pulsante verde START. Ogni macchina inserisce automaticamente le dosi dei prodotti. (Non va aggiunto nessun prodotto)</p>
+        <div class="step-line"></div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Paga con monete, banconote o la nostra tessera ricaricabile</h3>
+        <p>Il totem accetta contanti oppure la tessera ricaricabile L'Orsetto Lavatore, comoda per chi torna spesso.</p>
+        <div class="step-line"></div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Ricevi un messaggio a fine ciclo</h3>
+        <p>Ti avvisiamo via SMS quando il bucato è pronto, così puoi uscire e tornare solo per ritirarlo.</p>
+        <div class="step-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="servizi" style="background:var(--schiuma-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Servizi</div>
+      <h2 class="section-title">Non solo lavatrici</h2>
+    </div>
+    <div class="servizi-grid">
+      <div class="servizio">
+        <svg class="servizio-icon" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#173446" stroke-width="2"/><circle cx="20" cy="20" r="10" stroke="#4E88A6" stroke-width="2" stroke-dasharray="3 3"/></svg>
+        <h3>Lavaggio self-service</h3>
+        <p>Cicli da 9 a 18 kg, per bucato quotidiano o piumoni e coperte.</p>
+      </div>
+      <div class="servizio">
+        <svg class="servizio-icon" viewBox="0 0 40 40" fill="none"><path d="M8 28 Q20 6 32 28" stroke="#173446" stroke-width="2"/><path d="M8 28 Q20 14 32 28" stroke="#F4B940" stroke-width="2"/></svg>
+        <h3>Asciugatura rapida</h3>
+        <p>Asciugatrici professionali, con cicli da 15-30-45-60 minuti.</p>
+      </div>
+      <div class="servizio">
+        <svg class="servizio-icon" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="17" stroke="#173446" stroke-width="2"/><path d="M20 11v9l6 4" stroke="#4E88A6" stroke-width="2" stroke-linecap="round"/></svg>
+        <h3>Aperti fino a tardi</h3>
+        <p>Dalle 7 alle 22, ogni giorno, festivi inclusi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="prezzi">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Prezzi</div>
+      <h2 class="section-title">Chiaro, come un pannello di controllo</h2>
+    </div>
+    <div class="prezzi-panel">
+      <div class="prezzo-col">
+        <div class="mono" style="font-size:12px;color:var(--blu-acqua);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Lavatrici</div>
+        <div id="prezzi-lavatrici"><!-- generato automaticamente da MACCHINE --></div>
+      </div>
+      <div class="prezzo-col">
+        <div class="mono" style="font-size:12px;color:var(--blu-acqua);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Asciugatrici</div>
+        <div id="prezzi-asciugatrici"><!-- generato automaticamente da MACCHINE --></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="dove-siamo" style="background:var(--schiuma-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Dove siamo</div>
+      <h2 class="section-title">Ti aspettiamo a Vidigulfo</h2>
+    </div>
+    <div class="dove-grid">
+      <div>
+        <div class="info-riga">
+          <div class="info-label">Indirizzo</div>
+          <div class="info-val">Via Roma, 112, 27018 Vidigulfo (PV)</div>
+        </div>
+        <div class="info-riga">
+          <div class="info-label">Orari</div>
+          <div class="info-val">Tutti i giorni, 07:00 – 22:00<small>Ultimo ingresso ore 21:30</small></div>
+        </div>
+        <div class="info-riga">
+          <div class="info-label">Contatti</div>
+          <div class="info-val">Cell. 348 7654549<small>WhatsApp per assistenza rapida</small></div>
+        </div>
+        <div class="info-riga">
+          <div class="info-label">Web</div>
+          <div class="info-val">www.orsetto-lavatore.it</div>
+        </div>
+      </div>
+      <div class="mappa">
+        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="60" x2="400" y2="60" stroke="#173446" stroke-width="1.5"/>
+          <line x1="0" y1="160" x2="400" y2="160" stroke="#173446" stroke-width="1.5"/>
+          <line x1="90" y1="0" x2="90" y2="300" stroke="#173446" stroke-width="1.5"/>
+          <line x1="260" y1="0" x2="260" y2="300" stroke="#173446" stroke-width="1.5"/>
+        </svg>
+        <div class="mappa-pin">
+          <div class="pin-dot"></div>
+          <div class="mappa-label">L'Orsetto Lavatore</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="flex-direction:column;align-items:flex-start;gap:6px;">
+    <div style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:12px;">
+      <div><strong>L'Orsetto Lavatore</strong> di Curtarelli Giancarlo — Via Roma, 112, Vidigulfo (PV)</div>
+      <div>Sito dimostrativo, creato con Claude</div>
+    </div>
+    <div class="mono" style="font-size:11.5px;color:rgba(241,244,240,0.4);">Su iPhone: apri questo sito in Safari, tocca "Condividi" e poi "Aggiungi alla schermata Home" per installarlo come app.</div>
+    <div class="mono" id="contatore-visite" style="font-size:11.5px;color:rgba(241,244,240,0.4);">Visite al sito: <span id="numero-visite">…</span></div>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   PANNELLO DI CONTROLLO — modifica qui nome, capienza/tempo e prezzo
+   di ogni macchina. Salva il file e le modifiche appaiono su tutto
+   il sito (bacheca disponibilità + tabella prezzi).
+   ===================================================================== */
+
+const LAVATRICI = [
+  { nome: "Lavatrice 9 Kg - A",  prezzo: 4.50 },
+  { nome: "Lavatrice 9 Kg - B",  prezzo: 4.50 },
+  { nome: "Lavatrice 14 Kg - C", prezzo: 6.50 },
+  { nome: "Lavatrice 18 Kg - D", prezzo: 8.50 }
+];
+
+const ASCIUGATRICI = [
+  { nome: "Asciugatrice 1" },
+  { nome: "Asciugatrice 2" },
+  { nome: "Asciugatrice 3" },
+  { nome: "Asciugatrice 4" }
+];
+
+/* Prezzo e durata unici per tutte le asciugatrici, mostrati nella
+   sezione Prezzi. Modifica solo questi due valori. */
+const MINUTI_ASCIUGATRICE = 15;
+const PREZZO_ASCIUGATRICE = 2.50;
+
+/* Prezzo del sacchetto per sottovuoto piumoni, mostrato nella sezione Prezzi. */
+const PREZZO_SACCHETTO_SOTTOVUOTO = 2.00;
+
+/* Stati di esempio per la bacheca "disponibilità in tempo reale".
+   Questi sono dati dimostrativi: per renderli reali serve collegare
+   il sito ai sensori/centralina delle tue macchine. */
+const STATI_DEMO = [
+  { stato: "libera", nota: "Pronta subito" },
+  { stato: "corso",  nota: "Ancora 18 min" },
+  { stato: "corso",  nota: "Ancora 34 min" },
+  { stato: "libera", nota: "Pronta subito" },
+  { stato: "corso",  nota: "Ancora 9 min" },
+  { stato: "libera", nota: "Pronta subito" },
+  { stato: "pronta", nota: "Da ritirare" },
+  { stato: "corso",  nota: "Ancora 22 min" }
+];
+
+const ETICHETTA_STATO = { libera: "Libera", corso: "In corso", pronta: "Ciclo finito" };
+
+/* Indirizzo base del server (vedi server.js). Finché non è online, la
+   bacheca mostra automaticamente i dati dimostrativi qui sotto, e il
+   contatore visite resta a 0. Quando il server è pronto, cambia solo
+   questo indirizzo: aggiorna sia la bacheca sia il contatore. */
+const URL_SERVER_BASE = "https://orsetto-lavatore-server.onrender.com";
+const URL_SERVER_STATO = URL_SERVER_BASE + "/api/stato";
+const URL_CONTATORE = URL_SERVER_BASE + "/api/visita";
+
+function euro(v){ return v.toFixed(2).replace(".", ",") + " €"; }
+
+function renderRigaMacchina(nome, stato, nota){
+  return `<div class="machine ${stato}">
+    <div class="m-id">${nome.toUpperCase()}</div>
+    <div class="m-status">${ETICHETTA_STATO[stato]}</div>
+    <div class="m-time">${nota}</div>
+  </div>`;
+}
+
+function secondiInNota(sec){
+  if (sec <= 0) return "Pronta subito";
+  const min = Math.ceil(sec / 60);
+  return `Ancora ${min} min`;
+}
+
+async function generaLavatriciDaServer(){
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4000);
+  const risposta = await fetch(URL_SERVER_STATO, { signal: controller.signal });
+  clearTimeout(timeout);
+  if (!risposta.ok) throw new Error("risposta non valida");
+  const dati = await risposta.json();
+
+  const perNome = {};
+  dati.macchine.forEach(m => { perNome[m.nome] = m; });
+
+  document.getElementById("board-grid-lavatrici").innerHTML = LAVATRICI.map(m => {
+    const info = perNome[m.nome];
+    if (!info) return renderRigaMacchina(m.nome, "libera", "Pronta subito");
+    const stato = info.libera ? "libera" : "corso";
+    const nota = info.pausa ? "In pausa" : secondiInNota(info.secondi);
+    return renderRigaMacchina(m.nome, stato, nota);
+  }).join("");
+}
+
+function generaLavatriciDemo(){
+  document.getElementById("board-grid-lavatrici").innerHTML = LAVATRICI.map((m, i) => {
+    const s = STATI_DEMO[i % STATI_DEMO.length];
+    return renderRigaMacchina(m.nome, s.stato, s.nota);
+  }).join("");
+}
+
+// Le asciugatrici non sono ancora collegate all'Arduino (serve prima
+// sostituire le centraline per il comando indipendente dei due cestelli),
+// quindi per ora restano sempre con i dati dimostrativi.
+function generaAsciugatriciDemo(){
+  document.getElementById("board-grid-asciugatrici").innerHTML = `
+    <div class="non-disponibile">
+      Momentaneamente non disponibile<br>
+      <span>Aggiornamento delle asciugatrici in corso</span>
+    </div>
+  `;
+}
+
+function generaBacheca(){
+  generaLavatriciDaServer().catch(() => generaLavatriciDemo());
+  generaAsciugatriciDemo();
+}
+
+function generaPrezzi(){
+  document.getElementById("prezzi-lavatrici").innerHTML = LAVATRICI.map(m =>
+    `<div class="prezzo-riga"><span class="prezzo-nome">${m.nome}</span><span class="prezzo-val">${euro(m.prezzo)}</span></div>`
+  ).join("");
+  document.getElementById("prezzi-asciugatrici").innerHTML = `
+    <div class="prezzo-riga"><span class="prezzo-nome">Asciugatrici — ${MINUTI_ASCIUGATRICE} min</span><span class="prezzo-val">${euro(PREZZO_ASCIUGATRICE)}</span></div>
+    <div class="mono" style="font-size:12px;color:var(--blu-acqua);text-transform:uppercase;letter-spacing:0.06em;margin:18px 0 10px;">Sottovuoto</div>
+    <div class="prezzo-riga"><span class="prezzo-nome">Sacchetto per sottovuoto piumoni</span><span class="prezzo-val">${euro(PREZZO_SACCHETTO_SOTTOVUOTO)}</span></div>
+  `;
+}
+
+async function aggiornaContatore(){
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const risposta = await fetch(URL_CONTATORE, { signal: controller.signal });
+    clearTimeout(timeout);
+    if (!risposta.ok) throw new Error();
+    const dati = await risposta.json();
+    document.getElementById("numero-visite").textContent = dati.visite.toLocaleString("it-IT");
+  } catch {
+    document.getElementById("contatore-visite").style.display = "none";
+  }
+}
+
+generaBacheca();
+generaPrezzi();
+aggiornaContatore();
+setInterval(generaBacheca, 20000);
+
+/* ---- Installazione come app (PWA) ---- */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+let deferredPrompt = null;
+const installBtn = document.getElementById("install-btn");
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = "inline-block";
+});
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBtn.style.display = "none";
+});
+window.addEventListener("appinstalled", () => {
+  installBtn.style.display = "none";
+});
+</script>
+
+</body>
+</html>
