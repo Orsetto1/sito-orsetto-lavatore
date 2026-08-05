@@ -1,6 +1,7 @@
-const CACHE_NAME = "marea-v1";
+const CACHE_NAME = "orsetto-v2";
 const ASSETS = [
   "./lavanderia-orsetto-lavatore.html",
+  "./admin.html",
   "./manifest.json",
   "./foto-lavanderia.jpg",
   "./logo-orsetto.png",
