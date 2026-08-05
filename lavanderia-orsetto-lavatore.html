@@ -479,6 +479,7 @@
       <div>Sito dimostrativo, creato con Claude</div>
     </div>
     <div class="mono" id="contatore-visite" style="font-size:11.5px;color:rgba(241,244,240,0.4);">Visite al sito: <span id="numero-visite">…</span></div>
+    <a href="admin.html" class="mono" style="font-size:11px;color:rgba(241,244,240,0.3);text-decoration:none;">Area riservata</a>
   </div>
 </footer>
 
@@ -595,15 +596,33 @@ function generaBacheca(){
   generaAsciugatriciDemo();
 }
 
-function generaPrezzi(){
-  document.getElementById("prezzi-lavatrici").innerHTML = LAVATRICI.map(m =>
+function renderPrezzi(lavatrici, asciugatrici, sacchettoSottovuoto){
+  document.getElementById("prezzi-lavatrici").innerHTML = lavatrici.map(m =>
     `<div class="prezzo-riga"><span class="prezzo-nome">${m.nome}</span><span class="prezzo-val">${euro(m.prezzo)}</span></div>`
   ).join("");
   document.getElementById("prezzi-asciugatrici").innerHTML = `
-    <div class="prezzo-riga"><span class="prezzo-nome">Asciugatrici — ${MINUTI_ASCIUGATRICE} min</span><span class="prezzo-val">${euro(PREZZO_ASCIUGATRICE)}</span></div>
+    <div class="prezzo-riga"><span class="prezzo-nome">Asciugatrici — ${asciugatrici.minuti} min</span><span class="prezzo-val">${euro(asciugatrici.prezzo)}</span></div>
     <div class="mono" style="font-size:12px;color:var(--blu-acqua);text-transform:uppercase;letter-spacing:0.06em;margin:18px 0 10px;">Sottovuoto</div>
-    <div class="prezzo-riga"><span class="prezzo-nome">Sacchetto per sottovuoto piumoni</span><span class="prezzo-val">${euro(PREZZO_SACCHETTO_SOTTOVUOTO)}</span></div>
+    <div class="prezzo-riga"><span class="prezzo-nome">Sacchetto per sottovuoto piumoni</span><span class="prezzo-val">${euro(sacchettoSottovuoto)}</span></div>
   `;
+}
+
+async function generaPrezziDaServer(){
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4000);
+  const risposta = await fetch(URL_SERVER_BASE + "/api/listino", { signal: controller.signal });
+  clearTimeout(timeout);
+  if (!risposta.ok) throw new Error();
+  const dati = await risposta.json();
+  renderPrezzi(dati.lavatrici, dati.asciugatrici, dati.sacchettoSottovuoto);
+}
+
+function generaPrezziDemo(){
+  renderPrezzi(LAVATRICI, { minuti: MINUTI_ASCIUGATRICE, prezzo: PREZZO_ASCIUGATRICE }, PREZZO_SACCHETTO_SOTTOVUOTO);
+}
+
+function generaPrezzi(){
+  generaPrezziDaServer().catch(() => generaPrezziDemo());
 }
 
 async function aggiornaContatore(){
