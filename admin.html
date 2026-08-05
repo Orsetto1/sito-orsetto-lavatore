@@ -22,6 +22,13 @@
     width:100%;padding:14px;border:1px solid #B4B2A9;border-radius:8px;
     font-size:16px;margin-bottom:14px;box-sizing:border-box;text-align:center;
   }
+  .campo-password{position:relative;margin-bottom:14px;}
+  .campo-password input{margin-bottom:0;padding-right:44px;}
+  .btn-occhio{
+    position:absolute;right:6px;top:50%;transform:translateY(-50%);
+    background:none;border:none;cursor:pointer;padding:8px;
+    color:var(--grigio);display:flex;align-items:center;
+  }
   #schermata-login button, .btn-salva{
     width:100%;padding:14px;background:var(--giallo);color:var(--blu-profondo-2);
     border:none;border-radius:100px;font-size:15px;font-weight:600;cursor:pointer;
@@ -52,7 +59,15 @@
 <div id="schermata-login">
   <h1 style="margin-top:80px;">Area riservata</h1>
   <p class="sub">L'Orsetto Lavatore — solo per il titolare</p>
-  <input type="password" id="input-password" placeholder="Password" autofocus>
+  <div class="campo-password">
+    <input type="password" id="input-password" placeholder="Password" autofocus>
+    <button type="button" class="btn-occhio" id="btn-occhio" aria-label="Mostra password">
+      <svg id="icona-occhio" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+    </button>
+  </div>
   <button id="btn-accedi">Accedi</button>
   <div id="errore-login"></div>
 </div>
@@ -101,6 +116,18 @@ const URL_LISTINO = URL_SERVER_BASE + "/api/listino";
 
 let passwordInserita = "";
 let listinoAttuale = null;
+
+document.getElementById("btn-occhio").addEventListener("click", () => {
+  const input = document.getElementById("input-password");
+  const occhio = document.getElementById("icona-occhio");
+  const nascosta = input.type === "password";
+  input.type = nascosta ? "text" : "password";
+  document.getElementById("btn-occhio").setAttribute("aria-label", nascosta ? "Nascondi password" : "Mostra password");
+  // barra diagonale sull'occhio quando la password è visibile
+  occhio.innerHTML = nascosta
+    ? '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/><line x1="2" y1="2" x2="22" y2="22"/>'
+    : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>';
+});
 
 function euroInput(v){ return Number(v).toFixed(2); }
 
