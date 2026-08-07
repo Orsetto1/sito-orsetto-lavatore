@@ -207,11 +207,24 @@
   .step h3{font-size:19px;font-weight:600;margin-bottom:10px;}
   .step p{font-size:14.5px;color:var(--grigio);}
   .step-line{height:1px;background:linear-gradient(90deg, rgba(78,136,166,0.4), transparent);margin-top:24px;}
-  .link-tessera{
-    display:inline-block;margin-top:12px;font-size:13.5px;font-weight:600;
-    color:var(--blu-acqua);text-decoration:none;
+  .link-tessera-btn{
+    display:inline-flex;margin-top:12px;font-size:13.5px;font-weight:600;
+    color:var(--blu-acqua);background:none;border:1px solid var(--blu-acqua);
+    border-radius:100px;padding:8px 16px;cursor:pointer;font-family:'Inter',sans-serif;
+    transition:background .15s, color .15s;
   }
-  .link-tessera:hover{text-decoration:underline;}
+  .link-tessera-btn:hover{background:var(--blu-acqua);color:var(--bianco);}
+  .campo-label{display:block;font-size:12.5px;font-weight:600;color:var(--blu-profondo);margin-bottom:6px;margin-top:14px;}
+  .campo-label:first-of-type{margin-top:0;}
+  .campo-input{
+    width:100%;padding:11px 12px;border:1px solid #B4B2A9;border-radius:8px;
+    font-size:14.5px;box-sizing:border-box;font-family:'Inter',sans-serif;
+  }
+  .campo-submit{
+    width:100%;margin-top:20px;padding:13px;background:var(--giallo);color:var(--blu-profondo-2);
+    border:none;border-radius:100px;font-size:14.5px;font-weight:600;cursor:pointer;
+  }
+  .campo-esito{margin-top:12px;font-size:13.5px;text-align:center;min-height:18px;}
 
   /* SERVIZI */
   .servizi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
@@ -312,6 +325,22 @@
   </div>
 </div>
 
+<div class="ios-modal-overlay" id="modal-tessera">
+  <div class="ios-modal">
+    <button class="ios-modal-close" id="modal-tessera-close" aria-label="Chiudi">✕</button>
+    <h3>Registra la tua tessera</h3>
+    <p style="font-size:13.5px;color:var(--grigio);margin-bottom:18px;">Fallo una sola volta: da ora in poi riceverai un SMS quando il tuo bucato è pronto.</p>
+    <form id="form-tessera">
+      <label class="campo-label" for="tessera-numero">Numero della tessera</label>
+      <input type="text" id="tessera-numero" class="campo-input" required placeholder="Il numero stampato sulla tessera">
+      <label class="campo-label" for="tessera-telefono">Il tuo numero di cellulare</label>
+      <input type="tel" id="tessera-telefono" class="campo-input" required placeholder="+39 333 1234567">
+      <button type="submit" class="campo-submit">Conferma</button>
+      <div id="tessera-esito" class="campo-esito"></div>
+    </form>
+  </div>
+</div>
+
 <header class="hero">
   <img class="hero-photo" src="foto-lavanderia.jpg" alt="Interno de L'Orsetto Lavatore: lavatrici e asciugatrici professionali">
   <div class="wrap">
@@ -379,7 +408,7 @@
         <div class="step-num">02</div>
         <h3>Paga con monete, banconote o la nostra tessera ricaricabile</h3>
         <p>Il totem accetta contanti oppure la tessera ricaricabile L'Orsetto Lavatore, comoda per chi torna spesso.</p>
-        <a href="https://orsetto-lavatore-server.onrender.com/registra-tessera.html" class="link-tessera">Hai la tessera? Registrala per ricevere l'SMS di fine ciclo →</a>
+        <button type="button" id="btn-apri-tessera" class="link-tessera-btn">Registra la tua tessera</button>
         <div class="step-line"></div>
       </div>
       <div class="step">
@@ -687,6 +716,40 @@ document.getElementById("ios-modal-close").addEventListener("click", () => {
 });
 iosModal.addEventListener("click", (e) => {
   if (e.target === iosModal) iosModal.style.display = "none";
+});
+
+// Finestra "Registra la tua tessera"
+const modalTessera = document.getElementById("modal-tessera");
+document.getElementById("btn-apri-tessera").addEventListener("click", () => {
+  modalTessera.style.display = "flex";
+});
+document.getElementById("modal-tessera-close").addEventListener("click", () => {
+  modalTessera.style.display = "none";
+});
+modalTessera.addEventListener("click", (e) => {
+  if (e.target === modalTessera) modalTessera.style.display = "none";
+});
+document.getElementById("form-tessera").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const tessera = document.getElementById("tessera-numero").value.trim();
+  const telefono = document.getElementById("tessera-telefono").value.trim();
+  const esito = document.getElementById("tessera-esito");
+  esito.style.color = "var(--grigio)";
+  esito.textContent = "Invio in corso...";
+  try {
+    const risposta = await fetch(URL_SERVER_BASE + "/api/registra-tessera", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tessera, telefono })
+    });
+    if (!risposta.ok) throw new Error();
+    esito.style.color = "#3D7A4D";
+    esito.textContent = "Fatto! Da ora riceverai l'SMS di fine ciclo.";
+    document.getElementById("form-tessera").reset();
+  } catch (err) {
+    esito.style.color = "#C0392B";
+    esito.textContent = "Non sono riuscito a registrare la tessera. Riprova o chiedi al banco.";
+  }
 });
 </script>
 
