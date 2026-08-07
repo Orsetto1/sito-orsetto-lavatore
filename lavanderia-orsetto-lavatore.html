@@ -64,6 +64,39 @@
   @media(max-width:820px){.navlinks{display:none;}}
   @media(max-width:480px){.logo{font-size:16px;gap:8px;}}
 
+  /* FASCIA INSTALLAZIONE APP */
+  .app-banner{background:var(--blu-profondo-2);color:var(--schiuma);}
+  .app-banner-inner{
+    display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;
+    padding:12px 32px;
+  }
+  .app-banner-label{font-size:13px;color:rgba(241,244,240,0.65);}
+  .app-banner-btns{display:flex;gap:10px;flex-wrap:wrap;}
+  .app-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(241,244,240,0.08);color:var(--schiuma);
+    border:1px solid rgba(241,244,240,0.25);border-radius:100px;
+    padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;
+    font-family:'Inter',sans-serif;transition:background .15s;
+  }
+  .app-btn:hover{background:rgba(241,244,240,0.16);}
+
+  /* FINESTRA ISTRUZIONI IOS */
+  .ios-modal-overlay{
+    display:none;position:fixed;inset:0;z-index:100;
+    background:rgba(10,27,34,0.7);align-items:center;justify-content:center;padding:20px;
+  }
+  .ios-modal{
+    background:var(--bianco);color:var(--inchiostro);border-radius:16px;
+    padding:28px;max-width:360px;width:100%;position:relative;
+  }
+  .ios-modal h3{font-size:18px;font-weight:600;margin-bottom:16px;}
+  .ios-modal ol{padding-left:20px;font-size:14.5px;line-height:1.7;color:var(--grigio);}
+  .ios-modal-close{
+    position:absolute;top:16px;right:16px;background:none;border:none;
+    font-size:20px;cursor:pointer;color:var(--grigio);line-height:1;
+  }
+
   /* HERO */
   .hero{background:var(--blu-profondo);color:var(--schiuma);}
   .hero-photo{width:100%;height:min(52vw,460px);object-fit:cover;display:block;}
@@ -160,6 +193,11 @@
     font-family:'IBM Plex Mono';font-size:12px;letter-spacing:0.06em;text-transform:uppercase;
     color:var(--blu-acqua);margin-bottom:10px;
   }
+  .non-disponibile{
+    background:#0F2530;border-radius:8px;padding:24px 16px;text-align:center;
+    color:rgba(241,244,240,0.55);font-size:14px;border-left:3px solid var(--grigio);
+  }
+  .non-disponibile span{font-family:'IBM Plex Mono';font-size:12px;color:rgba(241,244,240,0.4);}
 
   /* COME FUNZIONA */
   .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}
@@ -169,6 +207,11 @@
   .step h3{font-size:19px;font-weight:600;margin-bottom:10px;}
   .step p{font-size:14.5px;color:var(--grigio);}
   .step-line{height:1px;background:linear-gradient(90deg, rgba(78,136,166,0.4), transparent);margin-top:24px;}
+  .link-tessera{
+    display:inline-block;margin-top:12px;font-size:13.5px;font-weight:600;
+    color:var(--blu-acqua);text-decoration:none;
+  }
+  .link-tessera:hover{text-decoration:underline;}
 
   /* SERVIZI */
   .servizi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
@@ -237,9 +280,37 @@
       <a href="#dove-siamo">Dove siamo</a>
     </div>
     <a class="nav-cta" href="#dove-siamo">Vieni a trovarci</a>
-    <button class="nav-cta" id="install-btn" style="display:none;border:none;cursor:pointer;">Installa l'app</button>
   </div>
 </nav>
+
+<div class="app-banner">
+  <div class="wrap app-banner-inner">
+    <span class="app-banner-label">Installa l'app sul telefono:</span>
+    <div class="app-banner-btns">
+      <button id="install-btn-android" class="app-btn" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24a11.463 11.463 0 00-9.14 0L5.45 5.67c-.19-.29-.55-.38-.85-.22-.29.16-.41.54-.26.85L6.18 9.48C3.28 11.31 1.32 14.31 1 17.78h22c-.32-3.47-2.28-6.47-5.4-8.3zM7 15.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm10 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/></svg>
+        Installa per Android
+      </button>
+      <button id="install-btn-ios" class="app-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+        Installa per iPhone
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="ios-modal-overlay" id="ios-modal">
+  <div class="ios-modal">
+    <button class="ios-modal-close" id="ios-modal-close" aria-label="Chiudi">✕</button>
+    <h3>Installa l'app su iPhone</h3>
+    <ol>
+      <li>Apri questo sito con <strong>Safari</strong> (non Chrome).</li>
+      <li>Tocca l'icona <strong>Condividi</strong> (il quadratino con la freccia in su).</li>
+      <li>Scorri e tocca <strong>"Aggiungi alla schermata Home"</strong>.</li>
+      <li>Conferma con <strong>"Aggiungi"</strong> in alto a destra.</li>
+    </ol>
+  </div>
+</div>
 
 <header class="hero">
   <img class="hero-photo" src="foto-lavanderia.jpg" alt="Interno de L'Orsetto Lavatore: lavatrici e asciugatrici professionali">
@@ -308,6 +379,7 @@
         <div class="step-num">02</div>
         <h3>Paga con monete, banconote o la nostra tessera ricaricabile</h3>
         <p>Il totem accetta contanti oppure la tessera ricaricabile L'Orsetto Lavatore, comoda per chi torna spesso.</p>
+        <a href="https://orsetto-lavatore-server.onrender.com/registra-tessera.html" class="link-tessera">Hai la tessera? Registrala per ricevere l'SMS di fine ciclo →</a>
         <div class="step-line"></div>
       </div>
       <div class="step">
@@ -412,7 +484,8 @@
       <div><strong>L'Orsetto Lavatore</strong> di Curtarelli Giancarlo — Via Roma, 112, Vidigulfo (PV)</div>
       <div>Sito dimostrativo, creato con Claude</div>
     </div>
-    <div class="mono" style="font-size:11.5px;color:rgba(241,244,240,0.4);">Su iPhone: apri questo sito in Safari, tocca "Condividi" e poi "Aggiungi alla schermata Home" per installarlo come app.</div>
+    <div class="mono" id="contatore-visite" style="font-size:11.5px;color:rgba(241,244,240,0.4);">Visite al sito: <span id="numero-visite">…</span></div>
+    <a href="admin.html" class="mono" style="font-size:11px;color:rgba(241,244,240,0.3);text-decoration:none;">Area riservata</a>
   </div>
 </footer>
 
@@ -439,7 +512,7 @@ const ASCIUGATRICI = [
 
 /* Prezzo e durata unici per tutte le asciugatrici, mostrati nella
    sezione Prezzi. Modifica solo questi due valori. */
-const MINUTI_ASCIUGATRICE = 15;
+const MINUTI_PER_IMPULSO_ASCIUGATRICE = 15;
 const PREZZO_ASCIUGATRICE = 2.50;
 
 /* Prezzo del sacchetto per sottovuoto piumoni, mostrato nella sezione Prezzi. */
@@ -461,10 +534,13 @@ const STATI_DEMO = [
 
 const ETICHETTA_STATO = { libera: "Libera", corso: "In corso", pronta: "Ciclo finito" };
 
-/* Indirizzo del server che riceve i dati dall'Arduino (vedi server.js).
-   Finché non è online, il sito mostra automaticamente i dati dimostrativi
-   qui sotto. Quando il server è pronto, cambia solo questo indirizzo. */
-const URL_SERVER_STATO = "http://localhost:3000/api/stato";
+/* Indirizzo base del server (vedi server.js). Finché non è online, la
+   bacheca mostra automaticamente i dati dimostrativi qui sotto, e il
+   contatore visite resta a 0. Quando il server è pronto, cambia solo
+   questo indirizzo: aggiorna sia la bacheca sia il contatore. */
+const URL_SERVER_BASE = "https://orsetto-lavatore-server.onrender.com";
+const URL_SERVER_STATO = URL_SERVER_BASE + "/api/stato";
+const URL_CONTATORE = URL_SERVER_BASE + "/api/visita";
 
 function euro(v){ return v.toFixed(2).replace(".", ",") + " €"; }
 
@@ -482,7 +558,7 @@ function secondiInNota(sec){
   return `Ancora ${min} min`;
 }
 
-async function generaBachecaDaServer(){
+async function generaLavatriciDaServer(){
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 4000);
   const risposta = await fetch(URL_SERVER_STATO, { signal: controller.signal });
@@ -497,70 +573,120 @@ async function generaBachecaDaServer(){
     const info = perNome[m.nome];
     if (!info) return renderRigaMacchina(m.nome, "libera", "Pronta subito");
     const stato = info.libera ? "libera" : "corso";
-    return renderRigaMacchina(m.nome, stato, secondiInNota(info.secondi));
-  }).join("");
-
-  document.getElementById("board-grid-asciugatrici").innerHTML = ASCIUGATRICI.map(m => {
-    const info = perNome[m.nome];
-    if (!info) return renderRigaMacchina(m.nome, "libera", "Pronta subito");
-    const stato = info.libera ? "libera" : "corso";
-    return renderRigaMacchina(m.nome, stato, secondiInNota(info.secondi));
+    const nota = info.pausa ? "In pausa" : secondiInNota(info.secondi);
+    return renderRigaMacchina(m.nome, stato, nota);
   }).join("");
 }
 
-function generaBachecaDemo(){
-  const grigliaLavatrici = document.getElementById("board-grid-lavatrici");
-  grigliaLavatrici.innerHTML = LAVATRICI.map((m, i) => {
+function generaLavatriciDemo(){
+  document.getElementById("board-grid-lavatrici").innerHTML = LAVATRICI.map((m, i) => {
     const s = STATI_DEMO[i % STATI_DEMO.length];
     return renderRigaMacchina(m.nome, s.stato, s.nota);
   }).join("");
+}
 
-  const grigliaAsciugatrici = document.getElementById("board-grid-asciugatrici");
-  grigliaAsciugatrici.innerHTML = ASCIUGATRICI.map((m, i) => {
-    const s = STATI_DEMO[(i + LAVATRICI.length) % STATI_DEMO.length];
-    return renderRigaMacchina(m.nome, s.stato, s.nota);
-  }).join("");
+// Le asciugatrici non sono ancora collegate all'Arduino (serve prima
+// sostituire le centraline per il comando indipendente dei due cestelli),
+// quindi per ora restano sempre con i dati dimostrativi.
+function generaAsciugatriciDemo(){
+  document.getElementById("board-grid-asciugatrici").innerHTML = `
+    <div class="non-disponibile">
+      Momentaneamente non disponibile<br>
+      <span>Aggiornamento delle asciugatrici in corso</span>
+    </div>
+  `;
 }
 
 function generaBacheca(){
-  generaBachecaDaServer().catch(() => generaBachecaDemo());
+  generaLavatriciDaServer().catch(() => generaLavatriciDemo());
+  generaAsciugatriciDemo();
 }
 
-function generaPrezzi(){
-  document.getElementById("prezzi-lavatrici").innerHTML = LAVATRICI.map(m =>
+function renderPrezzi(lavatrici, asciugatrici, sacchettoSottovuoto){
+  document.getElementById("prezzi-lavatrici").innerHTML = lavatrici.map(m =>
     `<div class="prezzo-riga"><span class="prezzo-nome">${m.nome}</span><span class="prezzo-val">${euro(m.prezzo)}</span></div>`
   ).join("");
   document.getElementById("prezzi-asciugatrici").innerHTML = `
-    <div class="prezzo-riga"><span class="prezzo-nome">Asciugatrici — ${MINUTI_ASCIUGATRICE} min</span><span class="prezzo-val">${euro(PREZZO_ASCIUGATRICE)}</span></div>
+    <div class="prezzo-riga"><span class="prezzo-nome">Asciugatrici — ${asciugatrici.minutiPerImpulso} min/impulso</span><span class="prezzo-val">${euro(asciugatrici.prezzo)}</span></div>
     <div class="mono" style="font-size:12px;color:var(--blu-acqua);text-transform:uppercase;letter-spacing:0.06em;margin:18px 0 10px;">Sottovuoto</div>
-    <div class="prezzo-riga"><span class="prezzo-nome">Sacchetto per sottovuoto piumoni</span><span class="prezzo-val">${euro(PREZZO_SACCHETTO_SOTTOVUOTO)}</span></div>
+    <div class="prezzo-riga"><span class="prezzo-nome">Sacchetto per sottovuoto piumoni</span><span class="prezzo-val">${euro(sacchettoSottovuoto)}</span></div>
   `;
+}
+
+async function generaPrezziDaServer(){
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4000);
+  const risposta = await fetch(URL_SERVER_BASE + "/api/listino", { signal: controller.signal });
+  clearTimeout(timeout);
+  if (!risposta.ok) throw new Error();
+  const dati = await risposta.json();
+  renderPrezzi(dati.lavatrici, dati.asciugatrici, dati.sacchettoSottovuoto);
+}
+
+function generaPrezziDemo(){
+  renderPrezzi(LAVATRICI, { minutiPerImpulso: MINUTI_PER_IMPULSO_ASCIUGATRICE, prezzo: PREZZO_ASCIUGATRICE }, PREZZO_SACCHETTO_SOTTOVUOTO);
+}
+
+function generaPrezzi(){
+  generaPrezziDaServer().catch(() => generaPrezziDemo());
+}
+
+async function aggiornaContatore(){
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const risposta = await fetch(URL_CONTATORE, { signal: controller.signal });
+    clearTimeout(timeout);
+    if (!risposta.ok) throw new Error();
+    const dati = await risposta.json();
+    document.getElementById("numero-visite").textContent = dati.visite.toLocaleString("it-IT");
+  } catch {
+    document.getElementById("contatore-visite").style.display = "none";
+  }
 }
 
 generaBacheca();
 generaPrezzi();
+aggiornaContatore();
 setInterval(generaBacheca, 20000);
 
 /* ---- Installazione come app (PWA) ---- */
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
+
+// Pulsante Android: compare da solo quando Chrome capisce che il sito
+// è installabile, e avvia l'installazione vera con un tocco
 let deferredPrompt = null;
-const installBtn = document.getElementById("install-btn");
+const installBtnAndroid = document.getElementById("install-btn-android");
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  installBtn.style.display = "inline-block";
+  installBtnAndroid.style.display = "inline-flex";
 });
-installBtn.addEventListener("click", async () => {
+installBtnAndroid.addEventListener("click", async () => {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
   await deferredPrompt.userChoice;
   deferredPrompt = null;
-  installBtn.style.display = "none";
+  installBtnAndroid.style.display = "none";
 });
 window.addEventListener("appinstalled", () => {
-  installBtn.style.display = "none";
+  installBtnAndroid.style.display = "none";
+});
+
+// Pulsante iPhone: Apple non permette l'installazione automatica dai
+// siti, quindi mostriamo le istruzioni passo passo in una finestra
+const installBtnIos = document.getElementById("install-btn-ios");
+const iosModal = document.getElementById("ios-modal");
+installBtnIos.addEventListener("click", () => {
+  iosModal.style.display = "flex";
+});
+document.getElementById("ios-modal-close").addEventListener("click", () => {
+  iosModal.style.display = "none";
+});
+iosModal.addEventListener("click", (e) => {
+  if (e.target === iosModal) iosModal.style.display = "none";
 });
 </script>
 
