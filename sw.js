@@ -1,4 +1,4 @@
-const CACHE_NAME = "orsetto-v4";
+const CACHE_NAME = "orsetto-v5";
 const ASSETS = [
   "./lavanderia-orsetto-lavatore.html",
   "./admin.html",
