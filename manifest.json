@@ -2,7 +2,7 @@
   "name": "L'Orsetto Lavatore",
   "short_name": "Orsetto Lavatore",
   "description": "Lavanderia self-service a Vidigulfo (PV) — orari, prezzi e disponibilità macchine in tempo reale.",
-  "start_url": "./lavanderia-orsetto-lavatore.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#173446",
