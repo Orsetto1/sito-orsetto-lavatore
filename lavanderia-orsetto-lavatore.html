@@ -745,6 +745,8 @@ document.getElementById("form-tessera").addEventListener("submit", async (e) => 
     if (!risposta.ok) throw new Error();
     esito.style.color = "#3D7A4D";
     esito.textContent = "Fatto! Da ora riceverai l'SMS di fine ciclo.";
+    // Il telefono la ricorda: non verrà più chiesta inquadrando il QR code
+    localStorage.setItem("orsetto_tessera_salvata", tessera);
     document.getElementById("form-tessera").reset();
   } catch (err) {
     esito.style.color = "#C0392B";
