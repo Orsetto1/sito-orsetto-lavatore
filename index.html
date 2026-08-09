@@ -157,6 +157,14 @@
   @media(max-width:640px){.section-title{font-size:26px;}}
   .section-head{margin-bottom:48px;}
 
+  /* PROMOZIONI */
+  #promozioni-sezione{background:var(--giallo);padding:40px 0;}
+  #promozioni-sezione .section-tag{color:var(--blu-profondo);}
+  .promozioni-box{
+    font-size:16px;line-height:1.7;color:var(--blu-profondo-2);white-space:pre-wrap;
+    max-width:640px;font-weight:500;
+  }
+
   /* LIVE BOARD */
   .board-section{background:var(--blu-profondo-2);color:var(--schiuma);}
   .board-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:32px;}
@@ -363,6 +371,13 @@
     </div>
   </div>
 </header>
+
+<section id="promozioni-sezione" style="display:none;">
+  <div class="wrap">
+    <div class="section-tag">Promozioni</div>
+    <div id="promozioni-testo-sito" class="promozioni-box"></div>
+  </div>
+</section>
 
 <section class="board-section" id="disponibilita">
   <div class="wrap">
@@ -651,6 +666,16 @@ function renderPrezzi(lavatrici, asciugatrici, sacchettoSottovuoto){
   `;
 }
 
+function renderPromozioni(testo){
+  const sezione = document.getElementById("promozioni-sezione");
+  if (testo && testo.trim().length > 0) {
+    document.getElementById("promozioni-testo-sito").textContent = testo;
+    sezione.style.display = "block";
+  } else {
+    sezione.style.display = "none";
+  }
+}
+
 async function generaPrezziDaServer(){
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 4000);
@@ -659,10 +684,12 @@ async function generaPrezziDaServer(){
   if (!risposta.ok) throw new Error();
   const dati = await risposta.json();
   renderPrezzi(dati.lavatrici, dati.asciugatrici, dati.sacchettoSottovuoto);
+  renderPromozioni(dati.promozioni);
 }
 
 function generaPrezziDemo(){
   renderPrezzi(LAVATRICI, { minutiPerImpulso: MINUTI_PER_IMPULSO_ASCIUGATRICE, prezzo: PREZZO_ASCIUGATRICE }, PREZZO_SACCHETTO_SOTTOVUOTO);
+  renderPromozioni(null);
 }
 
 function generaPrezzi(){
