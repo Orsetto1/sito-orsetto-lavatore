@@ -844,6 +844,13 @@ async function segnalaMacchina(btn){
   esito.style.color = "var(--grigio)";
   esito.textContent = "Attivazione in corso...";
 
+  // Riattiva da solo il pulsante dopo pochi secondi: serve solo a
+  // evitare doppi tocchi accidentali, non a "bloccare" la macchina —
+  // se il cliente deve segnalarla di nuovo più tardi (es. dopo un
+  // ciclo interrotto e ripreso da un altro cliente), il pulsante deve
+  // restare disponibile.
+  setTimeout(() => { btn.disabled = false; }, 4000);
+
   try {
     const risposta = await fetch(URL_SERVER_BASE + "/api/associa-macchina", {
       method: "POST",
@@ -871,4 +878,3 @@ generaPulsantiSegnalaMacchina();
 
 </body>
 </html>
-
