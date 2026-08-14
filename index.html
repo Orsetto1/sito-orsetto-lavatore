@@ -879,6 +879,12 @@ async function segnalaMacchina(btn){
       btn.disabled = false;
       return;
     }
+    if (risposta.status === 409) {
+      esito.style.color = "#C0392B";
+      esito.textContent = `"${nome}" risulta già segnalata da un altro cliente. Se pensi sia un errore, chiedi al banco.`;
+      btn.disabled = false;
+      return;
+    }
     if (!risposta.ok) throw new Error();
     esito.style.color = "#3D7A4D";
     esito.textContent = `Fatto! Ti avviseremo via SMS quando "${nome}" avrà finito.`;
@@ -894,4 +900,3 @@ generaPulsantiSegnalaMacchina();
 
 </body>
 </html>
-
