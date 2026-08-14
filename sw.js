@@ -1,4 +1,4 @@
-const CACHE_NAME = "orsetto-v7";
+const CACHE_NAME = "orsetto-v8";
 const ASSETS = [
   "./index.html",
   "./admin.html",
