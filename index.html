@@ -224,6 +224,18 @@
     transition:background .15s, color .15s;
   }
   .link-tessera-btn:hover{background:var(--blu-acqua);color:var(--bianco);}
+
+  /* SEGNALA MACCHINA */
+  .segnala-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  @media(max-width:820px){.segnala-grid{grid-template-columns:repeat(2,1fr);}}
+  .segnala-btn{
+    background:var(--bianco);border:1.5px solid rgba(22,35,43,0.12);border-radius:12px;
+    padding:20px 16px;text-align:center;cursor:pointer;font-family:'Inter',sans-serif;
+    font-size:14.5px;font-weight:600;color:var(--blu-profondo);transition:border-color .15s, transform .15s;
+  }
+  .segnala-btn:hover{border-color:var(--blu-acqua);transform:translateY(-2px);}
+  .segnala-btn:disabled{opacity:0.5;cursor:default;transform:none;}
+  .segnala-btn small{display:block;font-weight:400;color:var(--grigio);font-size:12px;margin-top:4px;}
   .campo-label{display:block;font-size:12.5px;font-weight:600;color:var(--blu-profondo);margin-bottom:6px;margin-top:14px;}
   .campo-label:first-of-type{margin-top:0;}
   .campo-input{
@@ -436,6 +448,18 @@
         <div class="step-line"></div>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="segnala-macchina" style="background:var(--schiuma-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">Con la tessera</div>
+      <h2 class="section-title">Hai appena avviato un ciclo?</h2>
+      <p style="color:var(--grigio);font-size:14.5px;margin-top:10px;max-width:480px;">Se hai già registrato la tessera, tocca qui sotto la macchina che hai avviato: niente QR code, niente numero da riscrivere.</p>
+    </div>
+    <div class="segnala-grid" id="segnala-grid"><!-- generato via JS --></div>
+    <div id="segnala-esito" style="margin-top:16px;font-size:14px;text-align:center;"></div>
   </div>
 </section>
 
@@ -789,7 +813,62 @@ document.getElementById("form-tessera").addEventListener("submit", async (e) => 
     esito.textContent = "Non sono riuscito a registrare la tessera. Riprova o chiedi al banco.";
   }
 });
+
+/* Pulsanti "ho avviato questa macchina": usano la tessera già salvata
+   nel telefono, senza bisogno di scansionare nessun QR code */
+const CHIAVE_MEMORIA_TESSERA = "orsetto_tessera_salvata";
+
+function generaPulsantiSegnalaMacchina(){
+  const griglia = document.getElementById("segnala-grid");
+  griglia.innerHTML = LAVATRICI.map(m => `
+    <button type="button" class="segnala-btn" data-nome="${m.nome}">${m.nome}<small>Tocca per attivare l'avviso</small></button>
+  `).join("");
+
+  griglia.querySelectorAll(".segnala-btn").forEach(btn => {
+    btn.addEventListener("click", () => segnalaMacchina(btn));
+  });
+}
+
+async function segnalaMacchina(btn){
+  const nome = btn.dataset.nome;
+  const esito = document.getElementById("segnala-esito");
+  const tessera = localStorage.getItem(CHIAVE_MEMORIA_TESSERA);
+
+  if (!tessera) {
+    esito.style.color = "#C0392B";
+    esito.textContent = "Registra prima la tua tessera qui sopra, poi torna a toccare la macchina.";
+    return;
+  }
+
+  btn.disabled = true;
+  esito.style.color = "var(--grigio)";
+  esito.textContent = "Attivazione in corso...";
+
+  try {
+    const risposta = await fetch(URL_SERVER_BASE + "/api/associa-macchina", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nome, tessera })
+    });
+    if (risposta.status === 404) {
+      esito.style.color = "#C0392B";
+      esito.textContent = "Questa tessera non risulta registrata. Registrala di nuovo qui sopra.";
+      btn.disabled = false;
+      return;
+    }
+    if (!risposta.ok) throw new Error();
+    esito.style.color = "#3D7A4D";
+    esito.textContent = `Fatto! Ti avviseremo via SMS quando "${nome}" avrà finito.`;
+  } catch (err) {
+    esito.style.color = "#C0392B";
+    esito.textContent = "Non sono riuscito ad attivare l'avviso. Riprova o chiedi al banco.";
+    btn.disabled = false;
+  }
+}
+
+generaPulsantiSegnalaMacchina();
 </script>
 
 </body>
 </html>
+
