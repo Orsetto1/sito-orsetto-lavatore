@@ -357,7 +357,7 @@
       <input type="text" id="tessera-numero" class="campo-input" required placeholder="Il numero stampato sulla tessera">
       <label class="campo-label" for="tessera-telefono">Il tuo numero di cellulare</label>
       <input type="tel" id="tessera-telefono" class="campo-input" required placeholder="+39 333 1234567">
-      <button type="submit" class="campo-submit">Conferma</button>
+      <button type="submit" class="campo-submit" id="btn-conferma-tessera">Conferma</button>
       <div id="tessera-esito" class="campo-esito"></div>
     </form>
   </div>
@@ -794,6 +794,7 @@ document.getElementById("form-tessera").addEventListener("submit", async (e) => 
   const tessera = document.getElementById("tessera-numero").value.trim();
   const telefono = document.getElementById("tessera-telefono").value.trim();
   const esito = document.getElementById("tessera-esito");
+  const bottone = document.getElementById("btn-conferma-tessera");
   esito.style.color = "var(--grigio)";
   esito.textContent = "Invio in corso...";
   try {
@@ -807,7 +808,22 @@ document.getElementById("form-tessera").addEventListener("submit", async (e) => 
     esito.textContent = "Fatto! Da ora riceverai l'SMS di fine ciclo.";
     // Il telefono la ricorda: non verrà più chiesta inquadrando il QR code
     localStorage.setItem("orsetto_tessera_salvata", tessera);
-    document.getElementById("form-tessera").reset();
+
+    // Conferma visiva sul pulsante stesso, poi chiude la finestra da sola
+    bottone.textContent = "✓ Tessera registrata";
+    bottone.style.background = "var(--salvia)";
+    bottone.style.color = "var(--bianco)";
+    bottone.disabled = true;
+
+    setTimeout(() => {
+      document.getElementById("form-tessera").reset();
+      modalTessera.style.display = "none";
+      bottone.textContent = "Conferma";
+      bottone.style.background = "";
+      bottone.style.color = "";
+      bottone.disabled = false;
+      esito.textContent = "";
+    }, 2000);
   } catch (err) {
     esito.style.color = "#C0392B";
     esito.textContent = "Non sono riuscito a registrare la tessera. Riprova o chiedi al banco.";
@@ -878,3 +894,4 @@ generaPulsantiSegnalaMacchina();
 
 </body>
 </html>
+
