@@ -276,6 +276,10 @@
   @media(max-width:820px){.prezzo-col:first-child{padding-right:0;border-bottom:1px solid rgba(241,244,240,0.12);margin-bottom:8px;padding-bottom:8px;}}
   .prezzo-nome{font-size:14.5px;color:rgba(241,244,240,0.85);}
   .prezzo-val{font-family:'IBM Plex Mono';font-size:17px;color:var(--giallo);}
+  .prezzo-doppio{text-align:right;}
+  .prezzo-doppio .prezzo-val{font-size:15px;display:block;}
+  .prezzo-doppio .prezzo-val small{font-family:'Inter',sans-serif;font-size:10.5px;color:rgba(241,244,240,0.45);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:1px;}
+  .prezzo-doppio .prezzo-val.tessera{color:var(--salvia);margin-top:6px;}
 
   /* DOVE SIAMO */
   .dove-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
@@ -582,10 +586,10 @@
    ===================================================================== */
 
 const LAVATRICI = [
-  { nome: "Lavatrice 9 Kg - A",  prezzo: 4.50 },
-  { nome: "Lavatrice 9 Kg - B",  prezzo: 4.50 },
-  { nome: "Lavatrice 14 Kg - C", prezzo: 6.50 },
-  { nome: "Lavatrice 18 Kg - D", prezzo: 8.50 }
+  { nome: "Lavatrice 9 Kg - A",  prezzo: 4.50, prezzoTessera: 4.50 },
+  { nome: "Lavatrice 9 Kg - B",  prezzo: 4.50, prezzoTessera: 4.50 },
+  { nome: "Lavatrice 14 Kg - C", prezzo: 6.50, prezzoTessera: 6.50 },
+  { nome: "Lavatrice 18 Kg - D", prezzo: 8.50, prezzoTessera: 8.50 }
 ];
 
 const ASCIUGATRICI = [
@@ -596,9 +600,10 @@ const ASCIUGATRICI = [
 ];
 
 /* Prezzo e durata unici per tutte le asciugatrici, mostrati nella
-   sezione Prezzi. Modifica solo questi due valori. */
+   sezione Prezzi. Modifica solo questi valori. */
 const MINUTI_PER_IMPULSO_ASCIUGATRICE = 15;
 const PREZZO_ASCIUGATRICE = 2.50;
+const PREZZO_ASCIUGATRICE_TESSERA = 2.50;
 
 /* Prezzo del sacchetto per sottovuoto piumoni, mostrato nella sezione Prezzi. */
 const PREZZO_SACCHETTO_SOTTOVUOTO = 2.00;
@@ -694,11 +699,23 @@ function generaBacheca(){
 }
 
 function renderPrezzi(lavatrici, asciugatrici, sacchettoSottovuoto){
-  document.getElementById("prezzi-lavatrici").innerHTML = lavatrici.map(m =>
-    `<div class="prezzo-riga"><span class="prezzo-nome">${m.nome}</span><span class="prezzo-val">${euro(m.prezzo)}</span></div>`
-  ).join("");
+  document.getElementById("prezzi-lavatrici").innerHTML = lavatrici.map(m => `
+    <div class="prezzo-riga">
+      <span class="prezzo-nome">${m.nome}</span>
+      <span class="prezzo-doppio">
+        <span class="prezzo-val"><small>Contanti</small>${euro(m.prezzo)}</span>
+        <span class="prezzo-val tessera"><small>Tessera</small>${euro(m.prezzoTessera)}</span>
+      </span>
+    </div>
+  `).join("");
   document.getElementById("prezzi-asciugatrici").innerHTML = `
-    <div class="prezzo-riga"><span class="prezzo-nome">Asciugatrici — ${asciugatrici.minutiPerImpulso} min/impulso</span><span class="prezzo-val">${euro(asciugatrici.prezzo)}</span></div>
+    <div class="prezzo-riga">
+      <span class="prezzo-nome">Asciugatrici — ${asciugatrici.minutiPerImpulso} min/impulso</span>
+      <span class="prezzo-doppio">
+        <span class="prezzo-val"><small>Contanti</small>${euro(asciugatrici.prezzo)}</span>
+        <span class="prezzo-val tessera"><small>Tessera</small>${euro(asciugatrici.prezzoTessera)}</span>
+      </span>
+    </div>
     <div class="mono" style="font-size:12px;color:var(--blu-acqua);text-transform:uppercase;letter-spacing:0.06em;margin:18px 0 10px;">Sottovuoto</div>
     <div class="prezzo-riga"><span class="prezzo-nome">Sacchetto per sottovuoto piumoni</span><span class="prezzo-val">${euro(sacchettoSottovuoto)}</span></div>
   `;
@@ -726,7 +743,7 @@ async function generaPrezziDaServer(){
 }
 
 function generaPrezziDemo(){
-  renderPrezzi(LAVATRICI, { minutiPerImpulso: MINUTI_PER_IMPULSO_ASCIUGATRICE, prezzo: PREZZO_ASCIUGATRICE }, PREZZO_SACCHETTO_SOTTOVUOTO);
+  renderPrezzi(LAVATRICI, { minutiPerImpulso: MINUTI_PER_IMPULSO_ASCIUGATRICE, prezzo: PREZZO_ASCIUGATRICE, prezzoTessera: PREZZO_ASCIUGATRICE_TESSERA }, PREZZO_SACCHETTO_SOTTOVUOTO);
   renderPromozioni(null);
 }
 
