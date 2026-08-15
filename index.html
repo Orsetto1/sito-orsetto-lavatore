@@ -350,16 +350,30 @@
 <div class="ios-modal-overlay" id="modal-tessera">
   <div class="ios-modal">
     <button class="ios-modal-close" id="modal-tessera-close" aria-label="Chiudi">✕</button>
-    <h3>Registra la tua tessera</h3>
-    <p style="font-size:13.5px;color:var(--grigio);margin-bottom:18px;">Fallo una sola volta: da ora in poi riceverai un SMS quando il tuo bucato è pronto.</p>
-    <form id="form-tessera">
-      <label class="campo-label" for="tessera-numero">Numero della tessera</label>
-      <input type="text" id="tessera-numero" class="campo-input" required placeholder="Il numero stampato sulla tessera">
-      <label class="campo-label" for="tessera-telefono">Il tuo numero di cellulare</label>
-      <input type="tel" id="tessera-telefono" class="campo-input" required placeholder="+39 333 1234567">
-      <button type="submit" class="campo-submit" id="btn-conferma-tessera">Conferma</button>
-      <div id="tessera-esito" class="campo-esito"></div>
-    </form>
+
+    <!-- Compare solo se su questo telefono c'è già una tessera salvata -->
+    <div id="schermata-gia-registrata" style="display:none;">
+      <h3>Hai già una tessera registrata</h3>
+      <p style="font-size:13.5px;color:var(--grigio);margin-bottom:20px;">Su questo telefono risulta già una tessera registrata. Vuoi registrarne un'altra?</p>
+      <div style="display:flex;gap:10px;">
+        <button type="button" id="btn-registra-altra-si" class="campo-submit" style="margin-top:0;">Sì, registra un'altra</button>
+        <button type="button" id="btn-registra-altra-no" class="campo-submit" style="margin-top:0;background:none;border:1.5px solid var(--grigio);color:var(--grigio);">No, va bene così</button>
+      </div>
+    </div>
+
+    <!-- Il modulo vero e proprio -->
+    <div id="schermata-modulo-tessera">
+      <h3>Registra la tua tessera</h3>
+      <p style="font-size:13.5px;color:var(--grigio);margin-bottom:18px;">Fallo una sola volta: da ora in poi riceverai un SMS quando il tuo bucato è pronto.</p>
+      <form id="form-tessera">
+        <label class="campo-label" for="tessera-numero">Numero della tessera</label>
+        <input type="text" id="tessera-numero" class="campo-input" required placeholder="Il numero stampato sulla tessera">
+        <label class="campo-label" for="tessera-telefono">Il tuo numero di cellulare</label>
+        <input type="tel" id="tessera-telefono" class="campo-input" required placeholder="+39 333 1234567">
+        <button type="submit" class="campo-submit" id="btn-conferma-tessera">Conferma</button>
+        <div id="tessera-esito" class="campo-esito"></div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -780,8 +794,26 @@ iosModal.addEventListener("click", (e) => {
 
 // Finestra "Registra la tua tessera"
 const modalTessera = document.getElementById("modal-tessera");
+const schermataGiaRegistrata = document.getElementById("schermata-gia-registrata");
+const schermataModuloTessera = document.getElementById("schermata-modulo-tessera");
+
 document.getElementById("btn-apri-tessera").addEventListener("click", () => {
+  const tesseraSalvata = localStorage.getItem("orsetto_tessera_salvata");
+  if (tesseraSalvata) {
+    schermataGiaRegistrata.style.display = "block";
+    schermataModuloTessera.style.display = "none";
+  } else {
+    schermataGiaRegistrata.style.display = "none";
+    schermataModuloTessera.style.display = "block";
+  }
   modalTessera.style.display = "flex";
+});
+document.getElementById("btn-registra-altra-si").addEventListener("click", () => {
+  schermataGiaRegistrata.style.display = "none";
+  schermataModuloTessera.style.display = "block";
+});
+document.getElementById("btn-registra-altra-no").addEventListener("click", () => {
+  modalTessera.style.display = "none";
 });
 document.getElementById("modal-tessera-close").addEventListener("click", () => {
   modalTessera.style.display = "none";
