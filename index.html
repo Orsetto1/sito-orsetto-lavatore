@@ -96,6 +96,11 @@
     position:absolute;top:16px;right:16px;background:none;border:none;
     font-size:20px;cursor:pointer;color:var(--grigio);line-height:1;
   }
+  .badge-ok{
+    width:48px;height:48px;border-radius:50%;background:var(--salvia);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 14px;
+    color:var(--bianco);font-size:22px;
+  }
 
   /* HERO */
   .hero{background:var(--blu-profondo);color:var(--schiuma);}
@@ -377,6 +382,21 @@
         <button type="submit" class="campo-submit" id="btn-conferma-tessera">Conferma</button>
         <div id="tessera-esito" class="campo-esito"></div>
       </form>
+    </div>
+
+    <!-- Compare dopo la registrazione, solo se il telefono supporta le notifiche -->
+    <div id="schermata-offri-push" style="display:none;">
+      <div class="badge-ok">✓</div>
+      <h3 style="text-align:center;">Tessera registrata</h3>
+      <p style="font-size:13.5px;color:var(--grigio);text-align:center;margin-bottom:6px;">Vuoi ricevere anche una notifica gratuita sul telefono, oltre all'SMS?</p>
+      <p style="font-size:12px;color:var(--grigio);text-align:center;margin-bottom:20px;background:var(--schiuma);border-radius:8px;padding:10px 12px;">
+        Riguarda <strong>solo</strong> l'avviso di fine ciclo di lavaggio o asciugatura — mai pubblicità o altri messaggi.
+      </p>
+      <div style="display:flex;gap:10px;">
+        <button type="button" id="btn-push-si" class="campo-submit" style="margin-top:0;">Sì, attiva</button>
+        <button type="button" id="btn-push-no" class="campo-submit" style="margin-top:0;background:none;border:1.5px solid var(--grigio);color:var(--grigio);">No, grazie</button>
+      </div>
+      <div id="push-esito" class="campo-esito"></div>
     </div>
   </div>
 </div>
@@ -813,8 +833,76 @@ iosModal.addEventListener("click", (e) => {
 const modalTessera = document.getElementById("modal-tessera");
 const schermataGiaRegistrata = document.getElementById("schermata-gia-registrata");
 const schermataModuloTessera = document.getElementById("schermata-modulo-tessera");
+const schermataOffriPush = document.getElementById("schermata-offri-push");
+
+// Le notifiche push funzionano solo se il browser le supporta, e su
+// iPhone SOLO se il sito è già installato come app sulla schermata Home
+// (Safari da solo, senza installazione, non può riceverle)
+function pushSupportataQui(){
+  const supportoBase = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+  if (!supportoBase) return false;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  return !isIOS || isStandalone;
+}
+
+function urlBase64ToUint8Array(base64String){
+  const padding = "=".repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; i++) outputArray[i] = rawData.charCodeAt(i);
+  return outputArray;
+}
+
+async function attivaNotifichePush(tessera){
+  const registration = await navigator.serviceWorker.ready;
+  const permesso = await Notification.requestPermission();
+  if (permesso !== "granted") return false;
+
+  const rispostaChiave = await fetch(URL_SERVER_BASE + "/api/push/chiave-pubblica");
+  const { chiavePubblica } = await rispostaChiave.json();
+
+  const sottoscrizione = await registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(chiavePubblica)
+  });
+
+  const rispostaRegistra = await fetch(URL_SERVER_BASE + "/api/push/registra", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tessera, sottoscrizione })
+  });
+  return rispostaRegistra.ok;
+}
+
+document.getElementById("btn-push-si").addEventListener("click", async (e) => {
+  const tessera = e.target.dataset.tessera;
+  const esitoPush = document.getElementById("push-esito");
+  esitoPush.style.color = "var(--grigio)";
+  esitoPush.textContent = "Attivazione in corso...";
+  try {
+    const ok = await attivaNotifichePush(tessera);
+    if (ok) {
+      esitoPush.style.color = "#3D7A4D";
+      esitoPush.textContent = "Fatto! Riceverai anche la notifica.";
+    } else {
+      esitoPush.style.color = "#C0392B";
+      esitoPush.textContent = "Permesso non concesso. Va bene comunque, riceverai l'SMS.";
+    }
+  } catch (err) {
+    esitoPush.style.color = "#C0392B";
+    esitoPush.textContent = "Non sono riuscito ad attivarla. Va bene comunque, riceverai l'SMS.";
+  }
+  setTimeout(() => { modalTessera.style.display = "none"; }, 1800);
+});
+
+document.getElementById("btn-push-no").addEventListener("click", () => {
+  modalTessera.style.display = "none";
+});
 
 document.getElementById("btn-apri-tessera").addEventListener("click", () => {
+  schermataOffriPush.style.display = "none";
   const tesseraSalvata = localStorage.getItem("orsetto_tessera_salvata");
   if (tesseraSalvata) {
     schermataGiaRegistrata.style.display = "block";
@@ -858,7 +946,7 @@ document.getElementById("form-tessera").addEventListener("submit", async (e) => 
     // Il telefono la ricorda: non verrà più chiesta inquadrando il QR code
     localStorage.setItem("orsetto_tessera_salvata", tessera);
 
-    // Conferma visiva sul pulsante stesso, poi chiude la finestra da sola
+    // Conferma visiva sul pulsante stesso
     bottone.textContent = "✓ Tessera registrata";
     bottone.style.background = "var(--salvia)";
     bottone.style.color = "var(--bianco)";
@@ -866,13 +954,20 @@ document.getElementById("form-tessera").addEventListener("submit", async (e) => 
 
     setTimeout(() => {
       document.getElementById("form-tessera").reset();
-      modalTessera.style.display = "none";
       bottone.textContent = "Conferma";
       bottone.style.background = "";
       bottone.style.color = "";
       bottone.disabled = false;
       esito.textContent = "";
-    }, 2000);
+
+      if (pushSupportataQui()) {
+        schermataModuloTessera.style.display = "none";
+        document.getElementById("schermata-offri-push").style.display = "block";
+        document.getElementById("btn-push-si").dataset.tessera = tessera;
+      } else {
+        modalTessera.style.display = "none";
+      }
+    }, 1500);
   } catch (err) {
     esito.style.color = "#C0392B";
     esito.textContent = "Non sono riuscito a registrare la tessera. Riprova o chiedi al banco.";
