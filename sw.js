@@ -1,4 +1,4 @@
-const CACHE_NAME = "orsetto-v10";
+const CACHE_NAME = "orsetto-v12";
 const ASSETS = [
   "./index.html",
   "./admin.html",
@@ -29,5 +29,30 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request).then((cached) => cached || fetch(event.request))
+  );
+});
+
+// Quando arriva una notifica push vera (mandata dal server), la mostra
+self.addEventListener("push", (event) => {
+  let dati = { titolo: "L'Orsetto Lavatore", testo: "Hai un nuovo avviso." };
+  try {
+    dati = event.data.json();
+  } catch {
+    if (event.data) dati.testo = event.data.text();
+  }
+  event.waitUntil(
+    self.registration.showNotification(dati.titolo || "L'Orsetto Lavatore", {
+      body: dati.testo,
+      icon: "./icons/icon-192.png",
+      badge: "./icons/icon-192.png"
+    })
+  );
+});
+
+// Se il cliente tocca la notifica, apre il sito
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow("./index.html")
   );
 });
