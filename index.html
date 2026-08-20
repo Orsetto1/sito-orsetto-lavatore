@@ -887,7 +887,7 @@ function urlBase64ToUint8Array(base64String){
 async function attivaNotifichePush(tessera){
   const registration = await navigator.serviceWorker.ready;
   const permesso = await Notification.requestPermission();
-  if (permesso !== "granted") return false;
+  if (permesso !== "granted") return { ok: false };
 
   const rispostaChiave = await fetch(URL_SERVER_BASE + "/api/push/chiave-pubblica");
   const { chiavePubblica } = await rispostaChiave.json();
@@ -902,7 +902,11 @@ async function attivaNotifichePush(tessera){
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ tessera, sottoscrizione })
   });
-  return rispostaRegistra.ok;
+  if (rispostaRegistra.status === 409) {
+    const dati = await rispostaRegistra.json();
+    return { ok: false, errore: dati.errore };
+  }
+  return { ok: rispostaRegistra.ok };
 }
 
 // Apertura della finestra: se c'è già una tessera salvata, chiede prima
@@ -964,6 +968,12 @@ document.getElementById("form-tessera").addEventListener("submit", async (e) => 
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ tessera, telefono })
     });
+    if (risposta.status === 409) {
+      const dati = await risposta.json();
+      esito.style.color = "#C0392B";
+      esito.textContent = dati.errore;
+      return;
+    }
     if (!risposta.ok) throw new Error();
     esito.style.color = "#3D7A4D";
     esito.textContent = "Fatto! Da ora riceverai l'SMS di fine ciclo.";
@@ -1023,10 +1033,13 @@ document.getElementById("btn-push-si").addEventListener("click", async (e) => {
   esitoPush.style.color = "var(--grigio)";
   esitoPush.textContent = "Attivazione in corso...";
   try {
-    const ok = await attivaNotifichePush(tessera);
-    if (ok) {
+    const risultato = await attivaNotifichePush(tessera);
+    if (risultato.ok) {
       esitoPush.style.color = "#3D7A4D";
       esitoPush.textContent = "Fatto! Da ora riceverai la notifica.";
+    } else if (risultato.errore) {
+      esitoPush.style.color = "#C0392B";
+      esitoPush.textContent = risultato.errore;
     } else {
       esitoPush.style.color = "#C0392B";
       esitoPush.textContent = "Permesso non concesso. Puoi riprovare dal pulsante \"Registra la tua tessera\".";
