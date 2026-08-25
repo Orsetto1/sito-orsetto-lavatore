@@ -239,7 +239,12 @@
     font-size:14.5px;font-weight:600;color:var(--blu-profondo);transition:border-color .15s, transform .15s;
   }
   .segnala-btn:hover{border-color:var(--blu-acqua);transform:translateY(-2px);}
-  .segnala-btn:disabled{opacity:0.5;cursor:default;transform:none;}
+  .segnala-btn:disabled{cursor:default;transform:none;}
+  .segnala-btn:disabled:not(.attiva){opacity:0.5;}
+  .segnala-btn.attiva{
+    background:#F7D6D6;border-color:#D99;color:#7A2020;
+  }
+  .segnala-btn.attiva small{color:#A55;}
   .segnala-btn small{display:block;font-weight:400;color:var(--grigio);font-size:12px;margin-top:4px;}
   .campo-label{display:block;font-size:12.5px;font-weight:600;color:var(--blu-profondo);margin-bottom:6px;margin-top:14px;}
   .campo-label:first-of-type{margin-top:0;}
@@ -710,6 +715,20 @@ async function generaLavatriciDaServer(){
     const nota = notaPerStato(stato, info.secondi);
     return renderRigaMacchina(m.nome, stato, nota);
   }).join("");
+
+  aggiornaPulsantiSegnalaMacchina(perNome);
+}
+
+// Il colore "attivo" (rosso chiaro) dei pulsanti segue lo stato vero
+// della macchina, non un timer: resta acceso finché è davvero in uso
+// (in corso o in pausa), e si spegne da solo appena il ciclo finisce.
+function aggiornaPulsantiSegnalaMacchina(perNome){
+  document.querySelectorAll(".segnala-btn").forEach(btn => {
+    const info = perNome[btn.dataset.nome];
+    const inUso = info && (info.stato === "corso" || info.stato === "pausa");
+    btn.classList.toggle("attiva", !!inUso);
+    btn.disabled = !!inUso;
+  });
 }
 
 
@@ -1081,16 +1100,8 @@ async function segnalaMacchina(btn){
     return;
   }
 
-  btn.disabled = true;
   esito.style.color = "var(--grigio)";
   esito.textContent = "Attivazione in corso...";
-
-  // Riattiva da solo il pulsante dopo pochi secondi: serve solo a
-  // evitare doppi tocchi accidentali, non a "bloccare" la macchina —
-  // se il cliente deve segnalarla di nuovo più tardi (es. dopo un
-  // ciclo interrotto e ripreso da un altro cliente), il pulsante deve
-  // restare disponibile.
-  setTimeout(() => { btn.disabled = false; }, 4000);
 
   try {
     const risposta = await fetch(URL_SERVER_BASE + "/api/associa-macchina", {
@@ -1098,25 +1109,36 @@ async function segnalaMacchina(btn){
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nome, tessera })
     });
+    const dati = await risposta.json().catch(() => ({}));
+
     if (risposta.status === 404) {
       esito.style.color = "#C0392B";
       esito.textContent = "Questa tessera non risulta registrata. Registrala di nuovo qui sopra.";
-      btn.disabled = false;
+      return;
+    }
+    if (dati.codice === "non_avviata") {
+      esito.style.color = "#C0392B";
+      esito.textContent = dati.errore;
       return;
     }
     if (risposta.status === 409) {
       esito.style.color = "#C0392B";
       esito.textContent = `"${nome}" risulta già segnalata da un altro cliente. Se pensi sia un errore, chiedi al banco.`;
-      btn.disabled = false;
       return;
     }
     if (!risposta.ok) throw new Error();
+
     esito.style.color = "#3D7A4D";
-    esito.textContent = `Fatto! Ti avviseremo via SMS quando "${nome}" avrà finito.`;
+    esito.textContent = `Fatto! Ti avviseremo quando "${nome}" avrà finito.`;
+    // Il colore rosso e il pulsante disabilitato restano finché il
+    // prossimo aggiornamento della bacheca (ogni 20 secondi) non
+    // conferma lo stato reale della macchina — che a questo punto sarà
+    // "in corso", quindi resterà così finché non finisce per davvero.
+    btn.classList.add("attiva");
+    btn.disabled = true;
   } catch (err) {
     esito.style.color = "#C0392B";
     esito.textContent = "Non sono riuscito ad attivare l'avviso. Riprova o chiedi al banco.";
-    btn.disabled = false;
   }
 }
 
