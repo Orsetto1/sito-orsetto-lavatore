@@ -1,4 +1,4 @@
-const CACHE_NAME = "orsetto-v21";
+const CACHE_NAME = "orsetto-v22";
 const ASSETS = [
   "./index.html",
   "./admin.html",
@@ -26,9 +26,19 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+// Prova sempre prima a scaricare la versione più recente da internet;
+// usa la copia salvata solo come riserva se non c'è connessione. Così
+// l'ultima versione del sito arriva da sola, senza dover reinstallare
+// l'app ogni volta che aggiorniamo qualcosa.
 self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    fetch(event.request)
+      .then((rispostaFresca) => {
+        const copia = rispostaFresca.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copia));
+        return rispostaFresca;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
 
