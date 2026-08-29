@@ -729,15 +729,18 @@ async function generaLavatriciDaServer(){
   aggiornaPulsantiSegnalaMacchina(perNome);
 }
 
-// Il colore "attivo" (rosso chiaro) dei pulsanti segue lo stato vero
-// della macchina, non un timer: resta acceso finché è davvero in uso
-// (in corso o in pausa), e si spegne da solo appena il ciclo finisce.
+// Il colore "attivo" (rosa/lettera bianca) dei pulsanti segue se
+// qualcuno ha DAVVERO premuto quel pulsante (cioè ha segnalato la
+// macchina con la sua tessera) — non semplicemente se la macchina sta
+// girando. Una macchina avviata da un cliente in contanti, senza che
+// nessuno prema il pulsante, resta bianca. Si spegne da sola appena
+// il ciclo finisce, perché a quel punto il server toglie l'associazione.
 function aggiornaPulsantiSegnalaMacchina(perNome){
   document.querySelectorAll(".segnala-btn").forEach(btn => {
     const info = perNome[btn.dataset.nome];
-    const inUso = info && (info.stato === "corso" || info.stato === "pausa");
-    btn.classList.toggle("attiva", !!inUso);
-    btn.disabled = !!inUso;
+    const segnalata = !!(info && info.segnalata);
+    btn.classList.toggle("attiva", segnalata);
+    btn.disabled = segnalata;
   });
 }
 
