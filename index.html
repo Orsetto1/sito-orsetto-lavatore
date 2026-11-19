@@ -64,22 +64,91 @@
   @media(max-width:820px){.navlinks{display:none;}}
   @media(max-width:480px){.logo{font-size:16px;gap:8px;}}
 
-  /* FASCIA INSTALLAZIONE APP */
+  /* FASCIA INSTALLAZIONE APP — pulsante unico, sempre visibile */
   .app-banner{background:var(--blu-profondo-2);color:var(--schiuma);}
   .app-banner-inner{
-    display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;
+    display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
     padding:12px 32px;
   }
-  .app-banner-label{font-size:13px;color:rgba(241,244,240,0.65);}
-  .app-banner-btns{display:flex;gap:10px;flex-wrap:wrap;}
-  .app-btn{
-    display:inline-flex;align-items:center;gap:8px;
-    background:rgba(241,244,240,0.08);color:var(--schiuma);
-    border:1px solid rgba(241,244,240,0.25);border-radius:100px;
-    padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;
-    font-family:'Inter',sans-serif;transition:background .15s;
+  .app-cta{
+    display:flex;align-items:center;gap:12px;
+    background:var(--giallo);color:var(--inchiostro);
+    border:none;border-radius:14px;cursor:pointer;
+    padding:10px 18px 10px 10px;font-family:'Inter',sans-serif;text-align:left;
+    box-shadow:0 4px 14px rgba(244,185,64,0.35);
+    animation:pulsa 2.4s ease-in-out infinite;
   }
-  .app-btn:hover{background:rgba(241,244,240,0.16);}
+  .app-cta img{width:40px;height:40px;border-radius:10px;flex-shrink:0;}
+  .app-cta-titolo{display:block;font-size:16px;font-weight:700;line-height:1.2;}
+  .app-cta-sotto{display:block;font-size:12.5px;font-weight:500;opacity:0.75;}
+  .app-ok{font-size:14px;color:rgba(241,244,240,0.85);}
+  @keyframes pulsa{0%,100%{transform:scale(1);}50%{transform:scale(1.03);}}
+  @media(max-width:640px){
+    .app-banner-inner{padding:12px 16px;}
+    .app-cta{width:100%;}
+  }
+
+  /* FINESTRA ISTRUZIONI INSTALLAZIONE */
+  .ins-overlay{
+    display:none;position:fixed;inset:0;z-index:100;
+    background:rgba(10,27,34,0.75);align-items:center;justify-content:center;padding:16px;
+  }
+  .ins-box{
+    background:var(--bianco);color:var(--inchiostro);border-radius:18px;
+    padding:24px 22px 20px;max-width:380px;width:100%;position:relative;
+    max-height:calc(100vh - 32px);overflow:auto;
+  }
+  .ins-close{
+    position:absolute;top:12px;right:12px;background:none;border:none;
+    font-size:22px;cursor:pointer;color:var(--grigio);line-height:1;padding:6px;
+  }
+  .ins-box h3{font-size:19px;font-weight:600;margin:0 28px 6px 0;line-height:1.3;}
+  .ins-intro{font-size:14px;color:var(--grigio);margin-bottom:14px;}
+  .ins-passi{list-style:none;counter-reset:passo;margin:0 0 6px;padding:0;}
+  .ins-passi li{
+    counter-increment:passo;position:relative;padding:10px 0 10px 46px;
+    font-size:15px;line-height:1.45;border-top:1px solid #EEF1EE;
+  }
+  .ins-passi li:first-child{border-top:none;}
+  .ins-passi li::before{
+    content:counter(passo);position:absolute;left:0;top:9px;
+    width:32px;height:32px;border-radius:50%;background:var(--blu-profondo);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;
+  }
+  .ico{
+    display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;
+    min-width:30px;height:30px;padding:0 6px;border-radius:8px;
+    background:#EEF1EE;border:1px solid #D6DCD7;font-size:18px;font-weight:700;margin:0 2px;
+  }
+  .voce{
+    display:inline-block;background:#EEF1EE;border-radius:6px;padding:1px 7px;
+    font-weight:600;white-space:nowrap;
+  }
+  .ins-nota{
+    font-size:13px;color:var(--grigio);background:#FFF8E6;border-left:3px solid var(--giallo);
+    padding:10px 12px;border-radius:6px;margin-top:12px;line-height:1.5;
+  }
+  .ins-btn{
+    display:block;width:100%;margin-top:14px;padding:13px;border:none;border-radius:12px;
+    background:var(--blu-profondo);color:#fff;font-size:15px;font-weight:700;cursor:pointer;
+    font-family:'Inter',sans-serif;text-align:center;text-decoration:none;
+  }
+  .ins-btn.secondario{background:none;color:var(--blu-profondo);border:1.5px solid var(--blu-acqua);}
+  .ins-qr{display:flex;justify-content:center;margin:6px 0 10px;}
+  .ins-qr svg{width:180px;height:180px;}
+  .ins-indirizzo{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;}
+  /* freccia che indica dove toccare sullo schermo */
+  .ins-freccia{
+    position:fixed;z-index:101;display:none;font-size:13px;font-weight:700;color:var(--giallo);
+    text-align:center;pointer-events:none;animation:rimbalza 1s ease-in-out infinite;
+  }
+  .ins-freccia span{display:block;font-size:40px;line-height:1;}
+  .ins-freccia.alto-destra{top:4px;right:6px;}
+  .ins-freccia.basso-centro{bottom:6px;left:50%;margin-left:-60px;width:120px;}
+  .ins-freccia.basso-destra{bottom:6px;right:6px;}
+  @keyframes rimbalza{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+  .ins-freccia.basso-centro,.ins-freccia.basso-destra{animation-name:rimbalzagiu;}
+  @keyframes rimbalzagiu{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
 
   /* FINESTRA ISTRUZIONI IOS */
   .ios-modal-overlay{
@@ -341,34 +410,26 @@
   </div>
 </nav>
 
-<div class="app-banner">
+<div class="app-banner" id="app-banner">
   <div class="wrap app-banner-inner">
-    <span class="app-banner-label">Installa l'app sul telefono:</span>
-    <div class="app-banner-btns">
-      <button id="install-btn-android" class="app-btn" style="display:none;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24a11.463 11.463 0 00-9.14 0L5.45 5.67c-.19-.29-.55-.38-.85-.22-.29.16-.41.54-.26.85L6.18 9.48C3.28 11.31 1.32 14.31 1 17.78h22c-.32-3.47-2.28-6.47-5.4-8.3zM7 15.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm10 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/></svg>
-        Installa per Android
-      </button>
-      <button id="install-btn-ios" class="app-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-        Installa per iPhone
-      </button>
-    </div>
+    <button id="app-cta" class="app-cta" type="button">
+      <img src="icons/icon-192.png" alt="">
+      <span>
+        <span class="app-cta-titolo">📲 Installa l'app sul telefono</span>
+        <span class="app-cta-sotto" id="app-cta-sotto">Gratis · vedi le macchine libere e ricevi gli avvisi</span>
+      </span>
+    </button>
+    <span class="app-ok" id="app-ok" style="display:none;">✅ App installata: la trovi sulla schermata Home con l'icona dell'orsetto.</span>
   </div>
 </div>
 
-<div class="ios-modal-overlay" id="ios-modal">
-  <div class="ios-modal">
-    <button class="ios-modal-close" id="ios-modal-close" aria-label="Chiudi">✕</button>
-    <h3>Installa l'app su iPhone</h3>
-    <ol>
-      <li>Apri questo sito con <strong>Safari</strong> (non Chrome).</li>
-      <li>Tocca l'icona <strong>Condividi</strong> (il quadratino con la freccia in su).</li>
-      <li>Scorri e tocca <strong>"Aggiungi alla schermata Home"</strong>.</li>
-      <li>Conferma con <strong>"Aggiungi"</strong> in alto a destra.</li>
-    </ol>
+<div class="ins-overlay" id="ins-modal" role="dialog" aria-modal="true">
+  <div class="ins-box">
+    <button class="ins-close" id="ins-close" aria-label="Chiudi">✕</button>
+    <div id="ins-contenuto"></div>
   </div>
 </div>
+<div class="ins-freccia" id="ins-freccia"></div>
 
 <div class="ios-modal-overlay" id="modal-tessera">
   <div class="ios-modal">
@@ -846,38 +907,208 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
 
-// Pulsante Android: compare da solo quando Chrome capisce che il sito
-// è installabile, e avvia l'installazione vera con un tocco
+// Capisce che telefono e che browser sta usando il cliente, per dargli
+// le istruzioni giuste. Non serve che il cliente sappia niente.
+function rilevaDispositivo(){
+  const ua = navigator.userAgent;
+  const ios = /iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  const android = /android/i.test(ua);
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  // browser "interni" di WhatsApp, Facebook, Instagram, Telegram, Google app...
+  const interno = /FBAN|FBAV|FB_IAB|Instagram|WhatsApp|Telegram|Line\/|GSA\/|; wv\)/i.test(ua);
+  let browser = "altro";
+  if (interno) browser = "interno";
+  else if (ios) browser = /CriOS/.test(ua) ? "chrome" : /FxiOS/.test(ua) ? "firefox" : /EdgiOS/.test(ua) ? "edge" : "safari";
+  else if (android) browser = /SamsungBrowser/.test(ua) ? "samsung" : /EdgA/.test(ua) ? "edge" : /Firefox/.test(ua) ? "firefox"
+                          : /OPR|Opera/.test(ua) ? "opera" : /MiuiBrowser|XiaoMi/.test(ua) ? "xiaomi" : /Chrome/.test(ua) ? "chrome" : "altro";
+  return { os: ios ? "ios" : android ? "android" : "pc", browser, standalone };
+}
+const DISP = window.__SIM_INSTALLA || rilevaDispositivo();
+
+const appBanner = document.getElementById("app-banner");
+const appCta = document.getElementById("app-cta");
+const appOk = document.getElementById("app-ok");
+const insModal = document.getElementById("ins-modal");
+const insContenuto = document.getElementById("ins-contenuto");
+const insFreccia = document.getElementById("ins-freccia");
+
+// Se il sito è già aperto come app installata, il pulsante non serve
+if (DISP.standalone) appBanner.style.display = "none";
+if (DISP.os === "pc") document.getElementById("app-cta-sotto").textContent = "Inquadra il codice con il telefono e installala in un attimo";
+
 let deferredPrompt = null;
-const installBtnAndroid = document.getElementById("install-btn-android");
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  installBtnAndroid.style.display = "inline-flex";
-});
-installBtnAndroid.addEventListener("click", async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  installBtnAndroid.style.display = "none";
 });
 window.addEventListener("appinstalled", () => {
-  installBtnAndroid.style.display = "none";
+  deferredPrompt = null;
+  appCta.style.display = "none";
+  appOk.style.display = "inline";
 });
 
-// Pulsante iPhone: Apple non permette l'installazione automatica dai
-// siti, quindi mostriamo le istruzioni passo passo in una finestra
-const installBtnIos = document.getElementById("install-btn-ios");
-const iosModal = document.getElementById("ios-modal");
-installBtnIos.addEventListener("click", () => {
-  iosModal.style.display = "flex";
-});
-document.getElementById("ios-modal-close").addEventListener("click", () => {
-  iosModal.style.display = "none";
-});
-iosModal.addEventListener("click", (e) => {
-  if (e.target === iosModal) iosModal.style.display = "none";
+const ICO_MENU = '<span class="ico">⋮</span>';
+const ICO_CONDIVIDI = '<span class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#147EFB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5"/><path d="M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2"/></svg></span>';
+const QR_SITO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 31" shape-rendering="crispEdges" width="180" height="180"><rect width="31" height="31" fill="#fff"/><path d="M1,1h1v1h-1zM2,1h1v1h-1zM3,1h1v1h-1zM4,1h1v1h-1zM5,1h1v1h-1zM6,1h1v1h-1zM7,1h1v1h-1zM12,1h1v1h-1zM13,1h1v1h-1zM15,1h1v1h-1zM20,1h1v1h-1zM23,1h1v1h-1zM24,1h1v1h-1zM25,1h1v1h-1zM26,1h1v1h-1zM27,1h1v1h-1zM28,1h1v1h-1zM29,1h1v1h-1zM1,2h1v1h-1zM7,2h1v1h-1zM10,2h1v1h-1zM11,2h1v1h-1zM12,2h1v1h-1zM17,2h1v1h-1zM19,2h1v1h-1zM21,2h1v1h-1zM23,2h1v1h-1zM29,2h1v1h-1zM1,3h1v1h-1zM3,3h1v1h-1zM4,3h1v1h-1zM5,3h1v1h-1zM7,3h1v1h-1zM11,3h1v1h-1zM12,3h1v1h-1zM13,3h1v1h-1zM15,3h1v1h-1zM16,3h1v1h-1zM18,3h1v1h-1zM19,3h1v1h-1zM23,3h1v1h-1zM25,3h1v1h-1zM26,3h1v1h-1zM27,3h1v1h-1zM29,3h1v1h-1zM1,4h1v1h-1zM3,4h1v1h-1zM4,4h1v1h-1zM5,4h1v1h-1zM7,4h1v1h-1zM10,4h1v1h-1zM12,4h1v1h-1zM13,4h1v1h-1zM14,4h1v1h-1zM17,4h1v1h-1zM19,4h1v1h-1zM20,4h1v1h-1zM23,4h1v1h-1zM25,4h1v1h-1zM26,4h1v1h-1zM27,4h1v1h-1zM29,4h1v1h-1zM1,5h1v1h-1zM3,5h1v1h-1zM4,5h1v1h-1zM5,5h1v1h-1zM7,5h1v1h-1zM10,5h1v1h-1zM12,5h1v1h-1zM13,5h1v1h-1zM19,5h1v1h-1zM23,5h1v1h-1zM25,5h1v1h-1zM26,5h1v1h-1zM27,5h1v1h-1zM29,5h1v1h-1zM1,6h1v1h-1zM7,6h1v1h-1zM9,6h1v1h-1zM12,6h1v1h-1zM13,6h1v1h-1zM16,6h1v1h-1zM17,6h1v1h-1zM20,6h1v1h-1zM21,6h1v1h-1zM23,6h1v1h-1zM29,6h1v1h-1zM1,7h1v1h-1zM2,7h1v1h-1zM3,7h1v1h-1zM4,7h1v1h-1zM5,7h1v1h-1zM6,7h1v1h-1zM7,7h1v1h-1zM9,7h1v1h-1zM11,7h1v1h-1zM13,7h1v1h-1zM15,7h1v1h-1zM17,7h1v1h-1zM19,7h1v1h-1zM21,7h1v1h-1zM23,7h1v1h-1zM24,7h1v1h-1zM25,7h1v1h-1zM26,7h1v1h-1zM27,7h1v1h-1zM28,7h1v1h-1zM29,7h1v1h-1zM10,8h1v1h-1zM13,8h1v1h-1zM14,8h1v1h-1zM16,8h1v1h-1zM17,8h1v1h-1zM18,8h1v1h-1zM19,8h1v1h-1zM21,8h1v1h-1zM1,9h1v1h-1zM4,9h1v1h-1zM6,9h1v1h-1zM7,9h1v1h-1zM9,9h1v1h-1zM11,9h1v1h-1zM12,9h1v1h-1zM13,9h1v1h-1zM15,9h1v1h-1zM17,9h1v1h-1zM20,9h1v1h-1zM22,9h1v1h-1zM24,9h1v1h-1zM9,10h1v1h-1zM10,10h1v1h-1zM11,10h1v1h-1zM13,10h1v1h-1zM14,10h1v1h-1zM16,10h1v1h-1zM17,10h1v1h-1zM18,10h1v1h-1zM19,10h1v1h-1zM21,10h1v1h-1zM22,10h1v1h-1zM23,10h1v1h-1zM26,10h1v1h-1zM29,10h1v1h-1zM3,11h1v1h-1zM4,11h1v1h-1zM5,11h1v1h-1zM7,11h1v1h-1zM8,11h1v1h-1zM11,11h1v1h-1zM12,11h1v1h-1zM14,11h1v1h-1zM15,11h1v1h-1zM16,11h1v1h-1zM20,11h1v1h-1zM22,11h1v1h-1zM23,11h1v1h-1zM26,11h1v1h-1zM27,11h1v1h-1zM28,11h1v1h-1zM1,12h1v1h-1zM9,12h1v1h-1zM10,12h1v1h-1zM11,12h1v1h-1zM14,12h1v1h-1zM17,12h1v1h-1zM20,12h1v1h-1zM23,12h1v1h-1zM24,12h1v1h-1zM25,12h1v1h-1zM27,12h1v1h-1zM28,12h1v1h-1zM2,13h1v1h-1zM6,13h1v1h-1zM7,13h1v1h-1zM8,13h1v1h-1zM9,13h1v1h-1zM11,13h1v1h-1zM12,13h1v1h-1zM15,13h1v1h-1zM16,13h1v1h-1zM18,13h1v1h-1zM20,13h1v1h-1zM21,13h1v1h-1zM22,13h1v1h-1zM23,13h1v1h-1zM26,13h1v1h-1zM28,13h1v1h-1zM29,13h1v1h-1zM1,14h1v1h-1zM2,14h1v1h-1zM3,14h1v1h-1zM6,14h1v1h-1zM10,14h1v1h-1zM14,14h1v1h-1zM15,14h1v1h-1zM16,14h1v1h-1zM17,14h1v1h-1zM20,14h1v1h-1zM24,14h1v1h-1zM1,15h1v1h-1zM2,15h1v1h-1zM7,15h1v1h-1zM11,15h1v1h-1zM13,15h1v1h-1zM14,15h1v1h-1zM15,15h1v1h-1zM21,15h1v1h-1zM23,15h1v1h-1zM26,15h1v1h-1zM27,15h1v1h-1zM28,15h1v1h-1zM29,15h1v1h-1zM1,16h1v1h-1zM2,16h1v1h-1zM4,16h1v1h-1zM8,16h1v1h-1zM10,16h1v1h-1zM13,16h1v1h-1zM16,16h1v1h-1zM18,16h1v1h-1zM19,16h1v1h-1zM21,16h1v1h-1zM22,16h1v1h-1zM23,16h1v1h-1zM26,16h1v1h-1zM28,16h1v1h-1zM1,17h1v1h-1zM2,17h1v1h-1zM6,17h1v1h-1zM7,17h1v1h-1zM8,17h1v1h-1zM9,17h1v1h-1zM12,17h1v1h-1zM14,17h1v1h-1zM18,17h1v1h-1zM21,17h1v1h-1zM22,17h1v1h-1zM24,17h1v1h-1zM28,17h1v1h-1zM2,18h1v1h-1zM5,18h1v1h-1zM8,18h1v1h-1zM10,18h1v1h-1zM14,18h1v1h-1zM15,18h1v1h-1zM16,18h1v1h-1zM17,18h1v1h-1zM19,18h1v1h-1zM23,18h1v1h-1zM24,18h1v1h-1zM26,18h1v1h-1zM29,18h1v1h-1zM1,19h1v1h-1zM3,19h1v1h-1zM4,19h1v1h-1zM6,19h1v1h-1zM7,19h1v1h-1zM9,19h1v1h-1zM10,19h1v1h-1zM11,19h1v1h-1zM13,19h1v1h-1zM15,19h1v1h-1zM16,19h1v1h-1zM17,19h1v1h-1zM18,19h1v1h-1zM19,19h1v1h-1zM21,19h1v1h-1zM23,19h1v1h-1zM24,19h1v1h-1zM28,19h1v1h-1zM29,19h1v1h-1zM5,20h1v1h-1zM8,20h1v1h-1zM10,20h1v1h-1zM11,20h1v1h-1zM12,20h1v1h-1zM13,20h1v1h-1zM15,20h1v1h-1zM18,20h1v1h-1zM21,20h1v1h-1zM28,20h1v1h-1zM29,20h1v1h-1zM1,21h1v1h-1zM4,21h1v1h-1zM5,21h1v1h-1zM7,21h1v1h-1zM12,21h1v1h-1zM16,21h1v1h-1zM17,21h1v1h-1zM21,21h1v1h-1zM22,21h1v1h-1zM23,21h1v1h-1zM24,21h1v1h-1zM25,21h1v1h-1zM27,21h1v1h-1zM9,22h1v1h-1zM10,22h1v1h-1zM15,22h1v1h-1zM16,22h1v1h-1zM18,22h1v1h-1zM21,22h1v1h-1zM25,22h1v1h-1zM27,22h1v1h-1zM28,22h1v1h-1zM29,22h1v1h-1zM1,23h1v1h-1zM2,23h1v1h-1zM3,23h1v1h-1zM4,23h1v1h-1zM5,23h1v1h-1zM6,23h1v1h-1zM7,23h1v1h-1zM10,23h1v1h-1zM13,23h1v1h-1zM21,23h1v1h-1zM23,23h1v1h-1zM25,23h1v1h-1zM28,23h1v1h-1zM1,24h1v1h-1zM7,24h1v1h-1zM9,24h1v1h-1zM10,24h1v1h-1zM12,24h1v1h-1zM13,24h1v1h-1zM15,24h1v1h-1zM16,24h1v1h-1zM17,24h1v1h-1zM19,24h1v1h-1zM21,24h1v1h-1zM25,24h1v1h-1zM26,24h1v1h-1zM27,24h1v1h-1zM29,24h1v1h-1zM1,25h1v1h-1zM3,25h1v1h-1zM4,25h1v1h-1zM5,25h1v1h-1zM7,25h1v1h-1zM11,25h1v1h-1zM12,25h1v1h-1zM18,25h1v1h-1zM19,25h1v1h-1zM21,25h1v1h-1zM22,25h1v1h-1zM23,25h1v1h-1zM24,25h1v1h-1zM25,25h1v1h-1zM28,25h1v1h-1zM1,26h1v1h-1zM3,26h1v1h-1zM4,26h1v1h-1zM5,26h1v1h-1zM7,26h1v1h-1zM9,26h1v1h-1zM10,26h1v1h-1zM12,26h1v1h-1zM23,26h1v1h-1zM25,26h1v1h-1zM26,26h1v1h-1zM27,26h1v1h-1zM29,26h1v1h-1zM1,27h1v1h-1zM3,27h1v1h-1zM4,27h1v1h-1zM5,27h1v1h-1zM7,27h1v1h-1zM10,27h1v1h-1zM12,27h1v1h-1zM20,27h1v1h-1zM25,27h1v1h-1zM26,27h1v1h-1zM27,27h1v1h-1zM29,27h1v1h-1zM1,28h1v1h-1zM7,28h1v1h-1zM10,28h1v1h-1zM13,28h1v1h-1zM15,28h1v1h-1zM16,28h1v1h-1zM18,28h1v1h-1zM21,28h1v1h-1zM25,28h1v1h-1zM28,28h1v1h-1zM1,29h1v1h-1zM2,29h1v1h-1zM3,29h1v1h-1zM4,29h1v1h-1zM5,29h1v1h-1zM6,29h1v1h-1zM7,29h1v1h-1zM9,29h1v1h-1zM11,29h1v1h-1zM12,29h1v1h-1zM16,29h1v1h-1zM18,29h1v1h-1zM21,29h1v1h-1zM22,29h1v1h-1zM24,29h1v1h-1zM25,29h1v1h-1zM28,29h1v1h-1z" fill="#16232B"/></svg>';
+
+function indirizzoSito(){ return "https://" + location.host + "/"; }
+function linkApriInChrome(){
+  return "intent://" + location.host + location.pathname + "#Intent;scheme=https;package=com.android.chrome;end";
+}
+
+function mostraIstruzioni(html, freccia){
+  insContenuto.innerHTML = html;
+  insModal.style.display = "flex";
+  if (freccia){
+    insFreccia.className = "ins-freccia " + freccia.posizione;
+    insFreccia.innerHTML = freccia.posizione === "alto-destra"
+      ? '<span>⬆</span>' + freccia.testo
+      : freccia.testo + '<span>⬇</span>';
+    insFreccia.style.display = "block";
+    clearTimeout(window.__timerFreccia);
+    window.__timerFreccia = setTimeout(() => { insFreccia.style.display = "none"; }, 15000);
+  }
+  const copia = document.getElementById("ins-copia");
+  if (copia) copia.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(indirizzoSito()); }
+    catch { const t = document.createElement("textarea"); t.value = indirizzoSito(); document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
+    copia.textContent = "✓ Indirizzo copiato";
+  });
+}
+function chiudiIstruzioni(){
+  insModal.style.display = "none";
+  insFreccia.style.display = "none";
+}
+document.getElementById("ins-close").addEventListener("click", chiudiIstruzioni);
+insModal.addEventListener("click", (e) => { if (e.target === insModal) chiudiIstruzioni(); });
+
+const NOTA_GIA_INSTALLATA = '<div class="ins-nota">Se nel menu vedi <span class="voce">Apri Orsetto Lavatore</span>, l\'app è <strong>già installata</strong>: cerca l\'icona dell\'orsetto tra le app del telefono.</div>';
+
+function istruzioniAndroidChrome(){
+  mostraIstruzioni(
+    '<h3>Installa l\'app in 3 tocchi</h3>' +
+    '<p class="ins-intro">Chiudi questa finestra e segui la freccia gialla.</p>' +
+    '<ol class="ins-passi">' +
+      '<li>Tocca i tre puntini ' + ICO_MENU + ' <strong>in alto a destra</strong>.</li>' +
+      '<li>Tocca <span class="voce">Installa app</span> oppure <span class="voce">Aggiungi a schermata Home</span>.</li>' +
+      '<li>Conferma con <span class="voce">Installa</span>.</li>' +
+    '</ol>' +
+    NOTA_GIA_INSTALLATA +
+    '<button class="ins-btn" onclick="chiudiIstruzioni();document.getElementById(\'ins-freccia\').style.display=\'block\'">Ho capito, chiudi</button>',
+    { posizione: "alto-destra", testo: "Tocca qui" }
+  );
+}
+
+function istruzioniAndroidAltroBrowser(){
+  const passi = {
+    samsung: '<li>Tocca il menu <span class="ico">☰</span> <strong>in basso a destra</strong>.</li><li>Tocca <span class="voce">Aggiungi pagina a</span>.</li><li>Scegli <span class="voce">Schermata Home</span> e conferma.</li>',
+    edge:    '<li>Tocca il menu <span class="ico">☰</span> <strong>in basso</strong>.</li><li>Tocca <span class="voce">Aggiungi al telefono</span> oppure <span class="voce">Aggiungi alla schermata Home</span>.</li><li>Conferma con <span class="voce">Installa</span>.</li>',
+    firefox: '<li>Tocca i tre puntini ' + ICO_MENU + '.</li><li>Tocca <span class="voce">Installa</span> oppure <span class="voce">Aggiungi a schermata Home</span>.</li><li>Conferma.</li>'
+  }[DISP.browser] || '<li>Apri il menu del browser.</li><li>Cerca <span class="voce">Installa app</span> oppure <span class="voce">Aggiungi a schermata Home</span>.</li><li>Conferma.</li>';
+  const freccia = DISP.browser === "samsung" ? { posizione: "basso-destra", testo: "Menu" }
+                : DISP.browser === "edge" ? { posizione: "basso-centro", testo: "Menu" } : null;
+  mostraIstruzioni(
+    '<h3>Installa l\'app</h3>' +
+    '<p class="ins-intro">Il modo più semplice è aprire il sito con <strong>Chrome</strong>: lì l\'installazione è automatica.</p>' +
+    '<a class="ins-btn" href="' + linkApriInChrome() + '">Apri in Chrome</a>' +
+    '<p class="ins-intro" style="margin:18px 0 6px;">Oppure, restando in questo browser:</p>' +
+    '<ol class="ins-passi">' + passi + '</ol>',
+    freccia
+  );
+}
+
+function istruzioniBrowserInterno(){
+  if (DISP.os === "android"){
+    mostraIstruzioni(
+      '<h3>Prima apri il sito in Chrome</h3>' +
+      '<p class="ins-intro">Hai aperto il sito da un\'altra app (WhatsApp, Facebook...). Da qui l\'app non si può installare.</p>' +
+      '<a class="ins-btn" href="' + linkApriInChrome() + '">Apri in Chrome</a>' +
+      '<p class="ins-intro" style="margin-top:12px;">Poi tocca di nuovo il pulsante giallo <strong>Installa l\'app</strong>.</p>'
+    );
+  } else {
+    mostraIstruzioni(
+      '<h3>Prima apri il sito in Safari</h3>' +
+      '<p class="ins-intro">Hai aperto il sito da un\'altra app (WhatsApp, Facebook...). Da qui l\'app non si può installare.</p>' +
+      '<ol class="ins-passi">' +
+        '<li>Tocca <span class="ico">···</span> oppure <span class="ico">' + '⤴' + '</span> e scegli <span class="voce">Apri in Safari</span>.</li>' +
+        '<li>In Safari tocca di nuovo il pulsante giallo <strong>Installa l\'app</strong>.</li>' +
+      '</ol>' +
+      '<button class="ins-btn secondario" id="ins-copia">Copia l\'indirizzo del sito</button>'
+    );
+  }
+}
+
+function istruzioniIphoneSafari(){
+  mostraIstruzioni(
+    '<h3>Installa l\'app in 3 tocchi</h3>' +
+    '<p class="ins-intro">Chiudi questa finestra e segui la freccia gialla.</p>' +
+    '<ol class="ins-passi">' +
+      '<li>Tocca il tasto Condividi ' + ICO_CONDIVIDI + ' nella barra di Safari. Se non lo vedi, tocca prima <span class="ico">···</span> in basso a destra.</li>' +
+      '<li>Scorri e tocca <span class="voce">Aggiungi alla schermata Home</span>.</li>' +
+      '<li>Tocca <span class="voce">Aggiungi</span> in alto a destra.</li>' +
+    '</ol>' +
+    '<button class="ins-btn" onclick="chiudiIstruzioni();document.getElementById(\'ins-freccia\').style.display=\'block\'">Ho capito, chiudi</button>',
+    { posizione: "basso-centro", testo: "Condividi" }
+  );
+}
+
+function istruzioniIphoneAltroBrowser(){
+  mostraIstruzioni(
+    '<h3>Su iPhone serve Safari</h3>' +
+    '<p class="ins-intro">L\'app si installa in modo sicuro solo da <strong>Safari</strong>, il browser con la bussola blu.</p>' +
+    '<ol class="ins-passi">' +
+      '<li>Tocca qui sotto per copiare l\'indirizzo del sito.</li>' +
+      '<li>Apri <strong>Safari</strong>, tocca la barra in alto e incolla.</li>' +
+      '<li>Tocca di nuovo il pulsante giallo <strong>Installa l\'app</strong>.</li>' +
+    '</ol>' +
+    '<button class="ins-btn" id="ins-copia">Copia l\'indirizzo del sito</button>'
+  );
+}
+
+function istruzioniPC(){
+  mostraIstruzioni(
+    '<h3>Installa l\'app sul telefono</h3>' +
+    '<p class="ins-intro">Inquadra questo codice con la fotocamera del telefono: si apre il sito, poi tocca il pulsante giallo <strong>Installa l\'app</strong>.</p>' +
+    '<div class="ins-qr">' + QR_SITO + '</div>' +
+    '<div class="ins-indirizzo">www.orsetto-lavatore.it</div>'
+  );
+}
+
+function installazioneRiuscita(){
+  mostraIstruzioni(
+    '<div class="badge-ok">✓</div>' +
+    '<h3 style="text-align:center;margin-right:0;">Fatto!</h3>' +
+    '<p class="ins-intro" style="text-align:center;">Tra qualche secondo trovi l\'icona dell\'orsetto sulla schermata Home del telefono.</p>' +
+    '<button class="ins-btn" onclick="chiudiIstruzioni()">Chiudi</button>'
+  );
+}
+
+// Aspetta fino a ~1,5 secondi che Chrome sia pronto per l'installazione automatica
+function attendiPrompt(ms){
+  return new Promise((ok) => {
+    if (deferredPrompt) return ok(true);
+    const inizio = Date.now();
+    const t = setInterval(() => {
+      if (deferredPrompt || Date.now() - inizio > ms){ clearInterval(t); ok(!!deferredPrompt); }
+    }, 100);
+  });
+}
+
+appCta.addEventListener("click", async () => {
+  if (DISP.browser === "interno") return istruzioniBrowserInterno();
+  if (DISP.os === "pc") return istruzioniPC();
+  if (DISP.os === "ios") return DISP.browser === "safari" ? istruzioniIphoneSafari() : istruzioniIphoneAltroBrowser();
+  // Android: se il browser permette l'installazione automatica, la avvia subito
+  if (await attendiPrompt(1500)){
+    const p = deferredPrompt;
+    deferredPrompt = null;
+    p.prompt();
+    const scelta = await p.userChoice;
+    if (scelta && scelta.outcome === "accepted") installazioneRiuscita();
+    return;
+  }
+  if (DISP.browser === "chrome") return istruzioniAndroidChrome();
+  istruzioniAndroidAltroBrowser();
 });
 
 // Finestra "Registra la tua tessera"
