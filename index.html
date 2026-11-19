@@ -81,7 +81,8 @@
   .app-cta img{width:40px;height:40px;border-radius:10px;flex-shrink:0;}
   .app-cta-titolo{display:block;font-size:16px;font-weight:700;line-height:1.2;}
   .app-cta-sotto{display:block;font-size:12.5px;font-weight:500;opacity:0.75;}
-  .app-ok{font-size:14px;color:rgba(241,244,240,0.85);}
+  .app-ok{font-size:14px;color:rgba(241,244,240,0.85);text-align:center;line-height:1.6;}
+  .app-ok-link{background:none;border:none;color:var(--giallo);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;}
   @keyframes pulsa{0%,100%{transform:scale(1);}50%{transform:scale(1.03);}}
   @media(max-width:640px){
     .app-banner-inner{padding:12px 16px;}
@@ -419,7 +420,7 @@
         <span class="app-cta-sotto" id="app-cta-sotto">Gratis · vedi le macchine libere e ricevi gli avvisi</span>
       </span>
     </button>
-    <span class="app-ok" id="app-ok" style="display:none;">✅ App installata: la trovi sulla schermata Home con l'icona dell'orsetto.</span>
+    <span class="app-ok" id="app-ok" style="display:none;">✅ App installata: la trovi tra le app del telefono (cerca <strong>Orsetto</strong>). <button type="button" class="app-ok-link" onclick="istruzioniScorciatoia()">Non la trovi? Tocca qui</button></span>
   </div>
 </div>
 
@@ -994,6 +995,26 @@ function istruzioniAndroidChrome(){
       '<li>Conferma con <span class="voce">Installa</span>.</li>' +
     '</ol>' +
     NOTA_GIA_INSTALLATA +
+    '<button class="ins-btn" onclick="chiudiIstruzioni();document.getElementById(\'ins-freccia\').style.display=\'block\'">Ho capito, chiudi</button>' +
+    '<button class="ins-btn secondario" onclick="istruzioniScorciatoia()">Installata ma l\'icona non compare?</button>',
+    { posizione: "alto-destra", testo: "Tocca qui" }
+  );
+}
+
+// Strada di riserva: scorciatoia dal menu di Chrome. Non passa da
+// Google Play, quindi funziona anche sui telefoni dove l'installazione
+// automatica si interrompe senza dire niente.
+function istruzioniScorciatoia(){
+  if (DISP.os !== "android" || DISP.browser !== "chrome") return istruzioniAndroidAltroBrowser();
+  mostraIstruzioni(
+    '<h3>Metti l\'orsetto sulla schermata Home</h3>' +
+    '<p class="ins-intro">Su alcuni telefoni l\'installazione automatica non va a buon fine. Questa strada è più semplice e non passa da Google Play. Chiudi la finestra e segui la freccia gialla.</p>' +
+    '<ol class="ins-passi">' +
+      '<li>Tocca i tre puntini ' + ICO_MENU + ' <strong>in alto a destra</strong>.</li>' +
+      '<li>Tocca <span class="voce">Aggiungi a schermata Home</span>. Se non la vedi, è dentro <span class="voce">Trasmetti, salva e condividi</span>.</li>' +
+      '<li>Se ti fa scegliere, tocca <span class="voce">Crea scorciatoia</span>.</li>' +
+      '<li>Conferma con <span class="voce">Aggiungi</span>.</li>' +
+    '</ol>' +
     '<button class="ins-btn" onclick="chiudiIstruzioni();document.getElementById(\'ins-freccia\').style.display=\'block\'">Ho capito, chiudi</button>',
     { posizione: "alto-destra", testo: "Tocca qui" }
   );
@@ -1078,8 +1099,9 @@ function installazioneRiuscita(){
   mostraIstruzioni(
     '<div class="badge-ok">✓</div>' +
     '<h3 style="text-align:center;margin-right:0;">Fatto!</h3>' +
-    '<p class="ins-intro" style="text-align:center;">Tra qualche secondo trovi l\'icona dell\'orsetto sulla schermata Home del telefono.</p>' +
-    '<button class="ins-btn" onclick="chiudiIstruzioni()">Chiudi</button>'
+    '<p class="ins-intro" style="text-align:center;">Tra qualche secondo trovi l\'orsetto <strong>tra le app del telefono</strong> (cerca <strong>Orsetto</strong>). Su alcuni telefoni compare anche sulla schermata Home.</p>' +
+    '<button class="ins-btn" onclick="chiudiIstruzioni()">Chiudi</button>' +
+    '<button class="ins-btn secondario" onclick="istruzioniScorciatoia()">Non lo trovi? Tocca qui</button>'
   );
 }
 
